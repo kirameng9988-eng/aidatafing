@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>工单管理</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="../src/data/mock.js"></script>
+    <style>
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #F3F4F6;
+            padding-bottom: 70px;
+        }
+        .tab-item {
+            transition: all 0.3s ease;
+        }
+        .tab-item.active {
+            color: #3B82F6;
+            border-bottom: 2px solid #3B82F6;
+        }
+        .work-order-card {
+            transition: all 0.2s ease;
+        }
+        .work-order-card:active {
+            transform: scale(0.98);
+        }
+        .bottom-tab {
+            transition: all 0.2s ease;
+        }
+        .bottom-tab:active {
+            transform: scale(0.95);
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: #3B82F6;
+        }
+        .add-btn {
+            transition: all 0.2s ease;
+        }
+        .add-btn:active {
+            transform: scale(0.95);
+        }
+        .top-nav {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        body {
+            padding-top: 56px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- 顶部系统导航栏 -->
+    <header class="top-nav fixed top-0 left-0 right-0 z-50 shadow-md">
+        <div class="flex items-center justify-between px-4 h-14">
+            <div class="flex items-center">
+                <button class="text-white mr-3" onclick="history.back()">
+                    <i class="fas fa-arrow-left text-lg"></i>
+                </button>
+                <h1 class="text-white text-lg font-semibold">我的需求</h1>
+            </div>
+            <button class="add-btn w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center text-white" id="addBtn">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- 搜索栏 -->
+    <div class="bg-white px-4 py-3 border-b border-gray-200">
+        <div class="relative">
+            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            <input type="text"
+                   id="searchInput"
+                   placeholder="搜索工单标题、编号..."
+                   class="search-input w-full pl-10 pr-4 py-2 bg-gray-100 rounded-lg text-sm border border-transparent">
+        </div>
+    </div>
+
+    <!-- 状态筛选Tab -->
+    <div class="bg-white border-b border-gray-200">
+        <div class="flex items-center justify-around" id="statusTabs">
+            <button class="tab-item flex-1 py-3 text-sm font-medium active" data-status="all">
+                全部
+            </button>
+            <button class="tab-item flex-1 py-3 text-sm font-medium text-gray-500" data-status="pending">
+                待处理
+            </button>
+            <button class="tab-item flex-1 py-3 text-sm font-medium text-gray-500" data-status="processing">
+                进行中
+            </button>
+            <button class="tab-item flex-1 py-3 text-sm font-medium text-gray-500" data-status="completed">
+                已完成
+            </button>
+        </div>
+    </div>
+
+    <!-- 工单列表 -->
+    <main class="px-4 py-4" id="workOrderList">
+        <!-- 工单卡片将通过JS动态生成 -->
+    </main>
+
+    <!-- 加载更多提示 -->
+    <div class="text-center py-4 text-gray-400 text-sm" id="loadMore">
+        <i class="fas fa-chevron-up mr-2"></i>上拉加载更多
+    </div>
+
+    <!-- 空状态 -->
+    <div class="hidden flex-col items-center justify-center py-20" id="emptyState">
+        <i class="fas fa-inbox text-6xl text-gray-300 mb-4"></i>
+        <p class="text-gray-400">暂无工单</p>
+    </div>
+
+    <!-- 底部Tab导航 -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-40">
+        <div class="flex items-center justify-around h-14">
+            <a href="../index.html" class="bottom-tab flex flex-col items-center text-gray-400">
+                <i class="fas fa-robot text-xl mb-1"></i>
+                <span class="text-xs">AI助手</span>
+            </a>
+            <a href="list.html" class="bottom-tab flex flex-col items-center text-blue-500">
+                <i class="fas fa-clipboard-list text-xl mb-1"></i>
+                <span class="text-xs">我的需求</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- 新增工单弹窗 -->
+    <div id="addModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-50" id="modalOverlay"></div>
+        <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl max-h-screen overflow-y-auto">
+            <div class="sticky top-0 bg-white px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+                <h2 class="text-lg font-semibold text-gray-800">创建工单</h2>
+                <button id="closeModalBtn" class="text-gray-400">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="px-4 py-4">
+                <!-- 工单标题 -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        工单标题 <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text"
+                           id="titleInput"
+                           placeholder="请输入工单标题"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500">
+                </div>
+
+                <!-- 工单描述 -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">工单描述</label>
+                    <textarea id="descInput"
+                              placeholder="请详细描述您的需求..."
+                              class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm resize-none focus:outline-none focus:border-blue-500"
+                              rows="4"></textarea>
+                </div>
+
+                <!-- 优先级 -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        优先级 <span class="text-red-500">*</span>
+                    </label>
+                    <div class="flex items-center space-x-3" id="priorityOptions">
+                        <button class="priority-option flex-1 flex items-center justify-center px-4 py-2 border-2 border-gray-200 rounded-lg" data-value="high">
+                            <i class="fas fa-arrow-up text-red-500 mr-2"></i>
+                            <span class="text-sm">高</span>
+                        </button>
+                        <button class="priority-option flex-1 flex items-center justify-center px-4 py-2 border-2 border-gray-200 rounded-lg active" data-value="medium" style="border-color: #3B82F6; background-color: #EFF6FF;">
+                            <i class="fas fa-minus text-yellow-500 mr-2"></i>
+                            <span class="text-sm">中</span>
+                        </button>
+                        <button class="priority-option flex-1 flex items-center justify-center px-4 py-2 border-2 border-gray-200 rounded-lg" data-value="low">
+                            <i class="fas fa-arrow-down text-blue-500 mr-2"></i>
+                            <span class="text-sm">低</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 工单类型 -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">工单类型</label>
+                    <select id="typeSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500">
+                        <option value="功能需求">功能需求</option>
+                        <option value="Bug修复">Bug修复</option>
+                        <option value="性能优化">性能优化</option>
+                        <option value="数据需求">数据需求</option>
+                        <option value="其他">其他</option>
+                    </select>
+                </div>
+
+                <!-- 提交按钮 -->
+                <button id="submitBtn" class="w-full bg-blue-500 text-white py-3 rounded-lg text-sm font-medium mt-4">
+                    提交工单
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 提交成功提示 -->
+    <div id="successToast" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl p-6 shadow-2xl z-50 hidden">
+        <div class="text-center">
+            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-check text-3xl text-green-500"></i>
+            </div>
+            <h3 class="text-lg font-semibold mb-2">提交成功</h3>
+            <p class="text-sm text-gray-500">工单已成功创建</p>
+        </div>
+    </div>
+
+    <script>
+        let currentStatus = 'all';
+        let currentSearchText = '';
+        let selectedPriority = 'medium';
+
+        // 获取URL参数
+        function getUrlParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        // 渲染工单列表
+        function renderWorkOrderList() {
+            const listContainer = document.getElementById('workOrderList');
+            const emptyState = document.getElementById('emptyState');
+
+            let filteredOrders = getWorkOrders(currentStatus);
+
+            // 搜索过滤
+            if (currentSearchText) {
+                filteredOrders = filteredOrders.filter(order =>
+                    order.title.toLowerCase().includes(currentSearchText.toLowerCase()) ||
+                    order.id.toLowerCase().includes(currentSearchText.toLowerCase())
+                );
+            }
+
+            if (filteredOrders.length === 0) {
+                listContainer.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                emptyState.classList.add('flex');
+                document.getElementById('loadMore').classList.add('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            emptyState.classList.remove('flex');
+            document.getElementById('loadMore').classList.remove('hidden');
+
+            listContainer.innerHTML = filteredOrders.map(order => `
+                <a href="detail.html?id=${order.id}" class="work-order-card block bg-white rounded-xl p-4 shadow-sm mb-3">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-base font-medium text-gray-800 flex-1 pr-2">${order.title}</h3>
+                        <span class="text-xs px-2 py-1 rounded-full ${getStatusClass(order.status)} whitespace-nowrap">
+                            ${getStatusText(order.status)}
+                        </span>
+                    </div>
+                    <div class="text-xs text-gray-500 mb-3">${order.id}</div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs px-2 py-1 rounded ${getPriorityClass(order.priority)}">
+                                ${getPriorityText(order.priority)}优先级
+                            </span>
+                            <span class="text-xs text-gray-400">${order.type}</span>
+                        </div>
+                        <div class="flex items-center text-xs text-gray-500">
+                            <i class="fas fa-clock mr-1"></i>
+                            ${formatTime(order.updateTime)}
+                        </div>
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        // 初始化Tab状态
+        function initTabs() {
+            const statusFromUrl = getUrlParam('status');
+            if (statusFromUrl) {
+                currentStatus = statusFromUrl;
+            }
+
+            const tabs = document.querySelectorAll('.tab-item');
+            tabs.forEach(tab => {
+                if (tab.dataset.status === currentStatus) {
+                    tab.classList.add('active');
+                    tab.classList.remove('text-gray-500');
+                } else {
+                    tab.classList.remove('active');
+                    tab.classList.add('text-gray-500');
+                }
+            });
+        }
+
+        // Tab切换事件
+        document.getElementById('statusTabs').addEventListener('click', function(e) {
+            const tab = e.target.closest('.tab-item');
+            if (!tab) return;
+
+            currentStatus = tab.dataset.status;
+
+            // 更新Tab样式
+            document.querySelectorAll('.tab-item').forEach(t => {
+                t.classList.remove('active');
+                t.classList.add('text-gray-500');
+            });
+            tab.classList.add('active');
+            tab.classList.remove('text-gray-500');
+
+            renderWorkOrderList();
+        });
+
+        // 搜索事件
+        let searchTimeout;
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                currentSearchText = e.target.value;
+                renderWorkOrderList();
+            }, 300);
+        });
+
+        // 打开新增工单弹窗
+        document.getElementById('addBtn').addEventListener('click', function() {
+            document.getElementById('addModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        });
+
+        // 关闭新增工单弹窗
+        function closeAddModal() {
+            document.getElementById('addModal').classList.add('hidden');
+            document.body.style.overflow = '';
+            // 清空表单
+            document.getElementById('titleInput').value = '';
+            document.getElementById('descInput').value = '';
+        }
+
+        document.getElementById('closeModalBtn').addEventListener('click', closeAddModal);
+        document.getElementById('modalOverlay').addEventListener('click', closeAddModal);
+
+        // 优先级选择
+        document.getElementById('priorityOptions').addEventListener('click', function(e) {
+            const option = e.target.closest('.priority-option');
+            if (!option) return;
+
+            document.querySelectorAll('.priority-option').forEach(opt => {
+                opt.classList.remove('active');
+                opt.style.borderColor = '#E5E7EB';
+                opt.style.backgroundColor = '';
+            });
+            option.classList.add('active');
+            option.style.borderColor = '#3B82F6';
+            option.style.backgroundColor = '#EFF6FF';
+            selectedPriority = option.dataset.value;
+        });
+
+        // 提交工单
+        document.getElementById('submitBtn').addEventListener('click', function() {
+            const title = document.getElementById('titleInput').value.trim();
+            const desc = document.getElementById('descInput').value.trim();
+            const type = document.getElementById('typeSelect').value;
+
+            if (!title) {
+                alert('请输入工单标题');
+                return;
+            }
+
+            // 模拟创建工单
+            const newOrder = {
+                id: generateWorkOrderId(),
+                title: title,
+                description: desc,
+                priority: selectedPriority,
+                status: 'pending',
+                type: type,
+                creator: '张三',
+                assignee: '待分配',
+                createTime: new Date().toLocaleString('zh-CN'),
+                updateTime: new Date().toLocaleString('zh-CN'),
+                progress: 0,
+                timeline: [
+                    {
+                        time: new Date().toLocaleString('zh-CN'),
+                        user: '张三',
+                        action: '创建工单',
+                        status: 'pending',
+                        icon: 'fa-plus-circle'
+                    }
+                ]
+            };
+
+            // 添加到模拟数据
+            mockWorkOrders.unshift(newOrder);
+
+            // 关闭弹窗
+            closeAddModal();
+
+            // 显示成功提示
+            const toast = document.getElementById('successToast');
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 1500);
+
+            // 刷新列表
+            renderWorkOrderList();
+        });
+
+        // 页面加载时执行
+        document.addEventListener('DOMContentLoaded', function() {
+            initTabs();
+            renderWorkOrderList();
+        });
+    </script>
+</body>
+</html>

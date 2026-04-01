@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI数据寻源助手</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #F3F4F6;
+            padding-top: 56px;
+            padding-bottom: 70px;
+        }
+        .message-bubble {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .typing-indicator span {
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+        .typing-indicator span:nth-child(1) { animation-delay: 0s; }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes bounce {
+            0%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-6px); }
+        }
+        .chat-input:focus {
+            outline: none;
+            border-color: #3B82F6;
+        }
+        .bottom-tab {
+            transition: all 0.2s ease;
+        }
+        .bottom-tab:active {
+            transform: scale(0.95);
+        }
+        .resource-card {
+            transition: all 0.2s ease;
+        }
+        .resource-card:active {
+            transform: scale(0.98);
+        }
+        .history-item {
+            transition: all 0.2s ease;
+        }
+        .history-item:active {
+            background-color: #F3F4F6;
+        }
+        .top-nav {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- 顶部系统导航栏 -->
+    <header class="top-nav fixed top-0 left-0 right-0 z-50 shadow-md">
+        <div class="flex items-center justify-between px-4 h-14">
+            <div class="flex items-center">
+                <button class="text-white mr-3" onclick="history.back()">
+                    <i class="fas fa-arrow-left text-lg"></i>
+                </button>
+                <h1 class="text-white text-lg font-semibold">AI数据寻源助手</h1>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button id="newChatBtn" class="text-white text-sm font-medium bg-white bg-opacity-20 px-3 py-1 rounded-full">
+                    <i class="fas fa-plus-circle mr-1"></i>新会话
+                </button>
+                <button id="historyBtn" class="text-white">
+                    <i class="fas fa-history text-lg"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 聊天区域 -->
+    <main class="flex flex-col h-screen" id="chatContainer">
+        <!-- 消息区域 -->
+        <div class="flex-1 overflow-y-auto px-4 py-4" id="messageArea">
+            <!-- 系统欢迎消息 -->
+            <div class="message-bubble mb-4">
+                <div class="bg-white rounded-xl p-4 shadow-sm">
+                    <p class="text-sm text-gray-800 mb-3">您好！我是AI数据寻源助手，可以帮助您快速找到合适的数据资源。</p>
+                    <p class="text-sm text-gray-600 mb-3">您可以问我：</p>
+                    <div class="space-y-2">
+                        <button class="quick-question w-full text-left px-3 py-2 bg-blue-50 rounded-lg text-sm text-blue-600 hover:bg-blue-100">
+                            <i class="fas fa-lightbulb mr-2"></i>我想找用户行为数据
+                        </button>
+                        <button class="quick-question w-full text-left px-3 py-2 bg-blue-50 rounded-lg text-sm text-blue-600 hover:bg-blue-100">
+                            <i class="fas fa-lightbulb mr-2"></i>需要销售相关的数据表
+                        </button>
+                        <button class="quick-question w-full text-left px-3 py-2 bg-blue-50 rounded-lg text-sm text-blue-600 hover:bg-blue-100">
+                            <i class="fas fa-lightbulb mr-2"></i>有哪些财务数据可用？
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 输入区域 -->
+        <div class="bg-white border-t border-gray-200 px-4 py-3 fixed bottom-14 left-0 right-0">
+            <div class="flex items-end space-x-2">
+                <div class="flex-1 bg-gray-100 rounded-2xl px-4 py-2">
+                    <textarea id="chatInput"
+                              class="chat-input w-full bg-transparent text-sm resize-none border-none"
+                              placeholder="输入您的问题，例如：我想找用户订单数据..."
+                              rows="1"
+                              style="max-height: 100px;"></textarea>
+                </div>
+                <button id="sendBtn" class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white flex-shrink-0 shadow-md">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- 历史记录侧边栏 -->
+    <div id="historySidebar" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-50" id="historyOverlay"></div>
+        <div class="absolute right-0 top-0 bottom-0 w-80 bg-white shadow-xl">
+            <div class="flex items-center justify-between px-4 h-14 border-b border-gray-200">
+                <h2 class="text-base font-semibold text-gray-800">历史记录</h2>
+                <button id="closeHistoryBtn" class="text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="overflow-y-auto" style="height: calc(100vh - 56px);" id="historyList">
+                <!-- 历史记录项将通过JS动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部Tab导航 -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-40">
+        <div class="flex items-center justify-around h-14">
+            <a href="index.html" class="bottom-tab flex flex-col items-center text-blue-500">
+                <i class="fas fa-robot text-xl mb-1"></i>
+                <span class="text-xs">AI助手</span>
+            </a>
+            <a href="pages/list.html" class="bottom-tab flex flex-col items-center text-gray-400">
+                <i class="fas fa-clipboard-list text-xl mb-1"></i>
+                <span class="text-xs">我的需求</span>
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        // 模拟数据资源库（参照截图格式）
+        const dataResources = {
+            user: [
+                {
+                    name: "实时线索行为数据",
+                    description: "用户在产品内的所有行为数据，包括页面浏览、点击、表单提交、按钮点击等全量行为日志",
+                    source: "神策数据",
+                    type: "数据集",
+                    updateFreq: "实时",
+                    tags: ["用户行为", "埋点数据"]
+                },
+                {
+                    name: "用户画像标签",
+                    description: "包含用户的基础属性标签、兴趣标签、消费能力标签、行为偏好标签等多维度标签体系",
+                    source: "数据中台",
+                    type: "标签数据",
+                    updateFreq: "T+1",
+                    tags: ["用户画像", "标签"]
+                },
+                {
+                    name: "用户基础信息表",
+                    description: "用户注册信息、实名认证信息、会员等级、账户状态等核心用户信息",
+                    source: "CRM系统",
+                    type: "主数据",
+                    updateFreq: "实时",
+                    tags: ["用户信息", "主数据"]
+                }
+            ],
+            order: [
+                {
+                    name: "订单交易明细",
+                    description: "全量订单交易数据，包含订单金额、商品明细、支付方式、优惠信息、订单状态等",
+                    source: "交易系统",
+                    type: "数据集",
+                    updateFreq: "实时",
+                    tags: ["订单", "交易"]
+                },
+                {
+                    name: "订单履约数据",
+                    description: "订单的履约状态、物流信息、签收情况、售后记录等完整履约链路数据",
+                    source: "履约中台",
+                    type: "数据集",
+                    updateFreq: "实时",
+                    tags: ["履约", "物流"]
+                }
+            ],
+            sales: [
+                {
+                    name: "销售业绩数据",
+                    description: "销售团队的业绩统计、目标完成率、环比同比数据、业绩排名等销售相关指标",
+                    source: "销售BI系统",
+                    type: "报表",
+                    updateFreq: "每日",
+                    tags: ["销售", "业绩"]
+                },
+                {
+                    name: "客户信息数据",
+                    description: "企业客户档案、联系信息、客户等级、跟进记录、成单历史等客户全生命周期数据",
+                    source: "CRM系统",
+                    type: "主数据",
+                    updateFreq: "实时",
+                    tags: ["客户", "CRM"]
+                },
+                {
+                    name: "线索转化漏斗",
+                    description: "从线索获取、线索清洗、商机转化、成交签约的全链路转化数据",
+                    source: "营销云",
+                    type: "报表",
+                    updateFreq: "T+1",
+                    tags: ["线索", "转化"]
+                }
+            ],
+            finance: [
+                {
+                    name: "财务流水数据",
+                    description: "全量财务收支流水，包含收入、支出、退款、调账等所有财务变动记录",
+                    source: "财务系统",
+                    type: "数据集",
+                    updateFreq: "实时",
+                    tags: ["财务", "流水"]
+                },
+                {
+                    name: "发票管理数据",
+                    description: "开票记录、发票状态、发票金额、税率、购方信息等发票相关数据",
+                    source: "税务系统",
+                    type: "数据集",
+                    updateFreq: "每日",
+                    tags: ["发票", "税务"]
+                }
+            ]
+        };
+
+        // 历史对话记录
+        let chatHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+
+        // 当前对话
+        let currentChat = [];
+
+        // 初始化历史记录列表
+        function renderHistoryList() {
+            const historyList = document.getElementById('historyList');
+            if (chatHistory.length === 0) {
+                historyList.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-64 text-gray-400">
+                        <i class="fas fa-inbox text-4xl mb-2"></i>
+                        <p class="text-sm">暂无历史记录</p>
+                    </div>
+                `;
+                return;
+            }
+
+            historyList.innerHTML = chatHistory.map((chat, index) => `
+                <div class="history-item px-4 py-3 border-b border-gray-100 cursor-pointer" onclick="loadHistory(${index})">
+                    <div class="text-sm font-medium text-gray-800 mb-1 truncate">${chat[0].content}</div>
+                    <div class="text-xs text-gray-400">${chat[0].time}</div>
+                </div>
+            `).join('');
+        }
+
+        // 加载历史对话
+        function loadHistory(index) {
+            const chat = chatHistory[index];
+            currentChat = chat;
+            renderMessages();
+            closeHistorySidebar();
+        }
+
+        // 打开历史记录侧边栏
+        function openHistorySidebar() {
+            document.getElementById('historySidebar').classList.remove('hidden');
+            renderHistoryList();
+        }
+
+        // 关闭历史记录侧边栏
+        function closeHistorySidebar() {
+            document.getElementById('historySidebar').classList.add('hidden');
+        }
+
+        // 渲染消息列表
+        function renderMessages() {
+            const messageArea = document.getElementById('messageArea');
+
+            if (currentChat.length === 0) {
+                // 显示欢迎消息
+                messageArea.innerHTML = `
+                    <div class="message-bubble mb-4">
+                        <div class="bg-white rounded-xl p-4 shadow-sm">
+                            <p class="text-sm text-gray-800 mb-3">您好！我是AI数据寻源助手，可以帮助您快速找到合适的数据资源。</p>
+                            <p class="text-sm text-gray-600 mb-3">您可以问我：</p>
+                            <div class="space-y-2">
+                                <button class="quick-question w-full text-left px-3 py-2 bg-blue-50 rounded-lg text-sm text-blue-600 hover:bg-blue-100">
+                                    <i class="fas fa-lightbulb mr-2"></i>我想找用户行为数据
+                                </button>
+                                <button class="quick-question w-full text-left px-3 py-2 bg-blue-50 rounded-lg text-sm text-blue-600 hover:bg-blue-100">
+                                    <i class="fas fa-lightbulb mr-2"></i>需要销售相关的数据表
+                                </button>
+                                <button class="quick-question w-full text-left px-3 py-2 bg-blue-50 rounded-lg text-sm text-blue-600 hover:bg-blue-100">
+                                    <i class="fas fa-lightbulb mr-2"></i>有哪些财务数据可用？
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                bindQuickQuestions();
+                return;
+            }
+
+            messageArea.innerHTML = currentChat.map(msg => {
+                if (msg.type === 'user') {
+                    return `
+                        <div class="message-bubble mb-4">
+                            <div class="flex items-start justify-end">
+                                <div class="bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-2xl rounded-tr-none p-3 shadow-sm max-w-xs">
+                                    <p class="text-sm">${msg.content}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <div class="message-bubble mb-4">
+                            ${msg.content}
+                        </div>
+                    `;
+                }
+            }).join('');
+
+            // 滚动到底部
+            messageArea.scrollTop = messageArea.scrollHeight;
+        }
+
+        // 添加用户消息
+        function addUserMessage(content) {
+            const now = new Date();
+            const time = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+            currentChat.push({
+                type: 'user',
+                content: content,
+                time: time
+            });
+
+            renderMessages();
+        }
+
+        // 添加AI回复
+        function addAIMessage(content) {
+            currentChat.push({
+                type: 'ai',
+                content: content,
+                time: new Date().toISOString()
+            });
+
+            renderMessages();
+        }
+
+        // 显示打字动画
+        function showTypingIndicator() {
+            const messageArea = document.getElementById('messageArea');
+            const typingDiv = document.createElement('div');
+            typingDiv.id = 'typingIndicator';
+            typingDiv.className = 'message-bubble mb-4';
+            typingDiv.innerHTML = `
+                <div class="bg-white rounded-xl p-4 shadow-sm inline-block">
+                    <div class="typing-indicator flex space-x-1">
+                        <span class="w-2 h-2 bg-gray-400 rounded-full"></span>
+                        <span class="w-2 h-2 bg-gray-400 rounded-full"></span>
+                        <span class="w-2 h-2 bg-gray-400 rounded-full"></span>
+                    </div>
+                </div>
+            `;
+            messageArea.appendChild(typingDiv);
+            messageArea.scrollTop = messageArea.scrollHeight;
+        }
+
+        // 移除打字动画
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        // 智能匹配数据资源
+        function findResources(question) {
+            const questionLower = question.toLowerCase();
+            let resources = [];
+
+            // 关键词匹配
+            if (questionLower.includes('用户') || questionLower.includes('行为') || questionLower.includes('画像') || questionLower.includes('线索')) {
+                resources = dataResources.user;
+            } else if (questionLower.includes('订单') || questionLower.includes('交易') || questionLower.includes('购买')) {
+                resources = dataResources.order;
+            } else if (questionLower.includes('销售') || questionLower.includes('客户') || questionLower.includes('业绩')) {
+                resources = dataResources.sales;
+            } else if (questionLower.includes('财务') || questionLower.includes('发票') || questionLower.includes('流水')) {
+                resources = dataResources.finance;
+            } else {
+                // 默认返回用户相关
+                resources = dataResources.user.slice(0, 2);
+            }
+
+            return resources;
+        }
+
+        // 生成AI回复内容（参照截图格式）
+        function generateAIResponse(question) {
+            const resources = findResources(question);
+
+            if (resources.length === 0) {
+                return `
+                    <div class="bg-white rounded-xl p-4 shadow-sm">
+                        <p class="text-sm text-gray-800 mb-2">抱歉，我没有找到匹配的数据资源。</p>
+                        <p class="text-sm text-gray-600">您可以尝试描述更具体的需求，或者联系数据管理员。</p>
+                    </div>
+                `;
+            }
+
+            let resourceCards = resources.map(res => `
+                <div class="resource-card bg-white rounded-xl p-4 shadow-sm mb-3 border border-gray-100">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-base font-semibold text-gray-900">${res.name}</h3>
+                        <span class="text-xs px-2 py-1 bg-purple-100 text-purple-600 rounded-full">${res.type}</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-3 leading-relaxed">${res.description}</p>
+                    <div class="flex items-center justify-between pt-2 border-t border-gray-100">
+                        <div class="flex items-center text-xs text-gray-500">
+                            <i class="fas fa-database mr-1"></i>
+                            <span>${res.source}</span>
+                        </div>
+                        <div class="flex items-center text-xs text-gray-500">
+                            <i class="fas fa-sync-alt mr-1"></i>
+                            <span>${res.updateFreq}</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-1 mt-2">
+                        ${res.tags.map(tag => `<span class="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded">${tag}</span>`).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            return `
+                <div class="bg-white rounded-xl p-4 shadow-sm">
+                    <p class="text-sm text-gray-800 mb-3">根据您的需求，我为您找到了以下数据资源：</p>
+                    ${resourceCards}
+                    <div class="mt-3 text-xs text-gray-500 flex items-center">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        <span>点击资源卡片可查看更多详情或申请权限</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 发送消息
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            // 添加用户消息
+            addUserMessage(message);
+
+            // 清空输入框
+            input.value = '';
+            input.style.height = 'auto';
+
+            // 显示打字动画
+            setTimeout(() => {
+                showTypingIndicator();
+            }, 300);
+
+            // 模拟AI回复延迟
+            setTimeout(() => {
+                hideTypingIndicator();
+                const aiResponse = generateAIResponse(message);
+                addAIMessage(aiResponse);
+
+                // 保存到历史记录
+                if (currentChat.length === 2) {
+                    // 新对话的第一条消息
+                    chatHistory.unshift([...currentChat]);
+                    if (chatHistory.length > 50) {
+                        chatHistory = chatHistory.slice(0, 50);
+                    }
+                    localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+                }
+            }, 1500);
+        }
+
+        // 绑定快捷问题按钮
+        function bindQuickQuestions() {
+            document.querySelectorAll('.quick-question').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const question = this.textContent.trim();
+                    document.getElementById('chatInput').value = question;
+                    sendMessage();
+                });
+            });
+        }
+
+        // 事件监听
+        document.getElementById('sendBtn').addEventListener('click', sendMessage);
+
+        document.getElementById('chatInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // 自动调整输入框高度
+        document.getElementById('chatInput').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+        });
+
+        document.getElementById('historyBtn').addEventListener('click', openHistorySidebar);
+        document.getElementById('closeHistoryBtn').addEventListener('click', closeHistorySidebar);
+        document.getElementById('historyOverlay').addEventListener('click', closeHistorySidebar);
+
+        // 新会话按钮
+        document.getElementById('newChatBtn').addEventListener('click', function() {
+            if (currentChat.length > 0) {
+                if (confirm('开启新会话将清空当前对话，确定吗？')) {
+                    currentChat = [];
+                    renderMessages();
+                }
+            } else {
+                currentChat = [];
+                renderMessages();
+            }
+        });
+
+        // 页面加载
+        document.addEventListener('DOMContentLoaded', function() {
+            renderMessages();
+        });
+    </script>
+</body>
+</html>

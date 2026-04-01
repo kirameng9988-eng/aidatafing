@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>工单详情</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="../src/data/mock.js"></script>
+    <style>
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #F3F4F6;
+            padding-top: 56px;
+            padding-bottom: 100px;
+        }
+        .top-nav {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .timeline-item {
+            position: relative;
+            padding-left: 30px;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 9px;
+            top: 24px;
+            bottom: -16px;
+            width: 2px;
+            background-color: #E5E7EB;
+        }
+        .timeline-item:last-child::before {
+            display: none;
+        }
+        .timeline-dot {
+            position: absolute;
+            left: 0;
+            top: 4px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+        .timeline-dot.pending {
+            background-color: #FEE2E2;
+            color: #EF4444;
+        }
+        .timeline-dot.processing {
+            background-color: #DBEAFE;
+            color: #3B82F6;
+        }
+        .timeline-dot.completed {
+            background-color: #D1FAE5;
+            color: #10B981;
+        }
+        .timeline-dot.closed {
+            background-color: #F3F4F6;
+            color: #6B7280;
+        }
+        .action-btn {
+            transition: all 0.2s ease;
+        }
+        .action-btn:active {
+            transform: scale(0.95);
+        }
+        .modal {
+            transition: all 0.3s ease;
+        }
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- 顶部导航栏 -->
+    <header class="top-nav fixed top-0 left-0 right-0 z-50 shadow-md">
+        <div class="flex items-center justify-between px-4 h-14">
+            <div class="flex items-center">
+                <a href="list.html" class="text-white mr-3">
+                    <i class="fas fa-arrow-left text-lg"></i>
+                </a>
+                <h1 class="text-white text-base font-semibold" id="workOrderId">WO20260401001</h1>
+            </div>
+            <button class="text-white" id="moreBtn">
+                <i class="fas fa-ellipsis-v text-lg"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <main class="px-4 py-4">
+        <!-- 基本信息 -->
+        <section class="bg-white rounded-xl p-4 shadow-sm mb-4">
+            <div class="flex items-center justify-between mb-3">
+                <h2 class="text-base font-semibold text-gray-800">
+                    <i class="fas fa-info-circle text-blue-500 mr-2"></i>基本信息
+                </h2>
+                <span class="text-sm font-medium px-3 py-1 rounded-full" id="statusBadge">
+                    进行中
+                </span>
+            </div>
+
+            <h3 class="text-lg font-medium text-gray-900 mb-3" id="workOrderTitle">
+                用户登录功能优化
+            </h3>
+
+            <div class="space-y-3">
+                <div class="flex items-start">
+                    <span class="text-sm text-gray-500 w-20">优先级</span>
+                    <span class="text-sm px-2 py-0.5 rounded" id="priorityBadge">高</span>
+                </div>
+                <div class="flex items-start">
+                    <span class="text-sm text-gray-500 w-20">工单类型</span>
+                    <span class="text-sm text-gray-800" id="workOrderType">功能需求</span>
+                </div>
+                <div class="flex items-start">
+                    <span class="text-sm text-gray-500 w-20">创建人</span>
+                    <div class="flex items-center">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=30&h=30&fit=crop"
+                             alt="创建人"
+                             class="w-5 h-5 rounded-full mr-2">
+                        <span class="text-sm text-gray-800" id="creatorName">张三</span>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <span class="text-sm text-gray-500 w-20">负责人</span>
+                    <div class="flex items-center">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=30&h=30&fit=crop"
+                             alt="负责人"
+                             class="w-5 h-5 rounded-full mr-2">
+                        <span class="text-sm text-gray-800" id="assigneeName">李四</span>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <span class="text-sm text-gray-500 w-20">创建时间</span>
+                    <span class="text-sm text-gray-800" id="createTime">2026-04-01 10:00</span>
+                </div>
+                <div class="flex items-start">
+                    <span class="text-sm text-gray-500 w-20">更新时间</span>
+                    <span class="text-sm text-gray-800" id="updateTime">2026-04-01 15:30</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 工单描述 -->
+        <section class="bg-white rounded-xl p-4 shadow-sm mb-4">
+            <h2 class="text-base font-semibold text-gray-800 mb-3">
+                <i class="fas fa-file-alt text-blue-500 mr-2"></i>工单描述
+            </h2>
+            <p class="text-sm text-gray-600 leading-relaxed" id="workOrderDesc">
+                优化用户登录体验，增加微信、钉钉等第三方登录方式，提升用户登录便捷性和系统安全性。
+            </p>
+        </section>
+
+        <!-- 处理进度时间轴 -->
+        <section class="bg-white rounded-xl p-4 shadow-sm mb-4">
+            <h2 class="text-base font-semibold text-gray-800 mb-4">
+                <i class="fas fa-history text-blue-500 mr-2"></i>处理进度
+            </h2>
+
+            <div class="space-y-4" id="timelineContainer">
+                <!-- 时间轴项目将通过JS动态生成 -->
+            </div>
+        </section>
+    </main>
+
+    <!-- 底部操作按钮 -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-3 z-50">
+        <div class="flex items-center space-x-3">
+            <button class="action-btn flex-1 bg-blue-500 text-white py-3 rounded-lg text-sm font-medium" id="handleBtn">
+                <i class="fas fa-play-circle mr-2"></i>处理工单
+            </button>
+            <button class="action-btn w-12 h-12 bg-gray-100 text-gray-700 rounded-lg" id="closeBtn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- 处理工单弹窗 -->
+    <div class="modal fixed inset-0 z-50 hidden" id="handleModal">
+        <div class="modal-overlay absolute inset-0" onclick="closeHandleModal()"></div>
+        <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl p-4">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold">处理工单</h3>
+                <button onclick="closeHandleModal()" class="text-gray-400">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm text-gray-600 mb-2">处理说明</label>
+                <textarea class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500" rows="3"
+                          placeholder="请输入处理说明..."></textarea>
+            </div>
+            <button class="w-full bg-blue-500 text-white py-3 rounded-lg text-sm font-medium" onclick="submitHandle()">
+                提交
+            </button>
+        </div>
+    </div>
+
+    <!-- 更多操作弹窗 -->
+    <div class="modal fixed inset-0 z-50 hidden" id="moreModal">
+        <div class="modal-overlay absolute inset-0" onclick="closeMoreModal()"></div>
+        <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl p-4">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold">更多操作</h3>
+                <button onclick="closeMoreModal()" class="text-gray-400">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="space-y-2">
+                <button class="w-full flex items-center px-4 py-3 bg-gray-50 rounded-lg text-left">
+                    <i class="fas fa-share-alt text-blue-500 mr-3"></i>
+                    <span class="text-sm">分享工单</span>
+                </button>
+                <button class="w-full flex items-center px-4 py-3 bg-gray-50 rounded-lg text-left">
+                    <i class="fas fa-edit text-green-500 mr-3"></i>
+                    <span class="text-sm">编辑工单</span>
+                </button>
+                <button class="w-full flex items-center px-4 py-3 bg-gray-50 rounded-lg text-left">
+                    <i class="fas fa-trash text-red-500 mr-3"></i>
+                    <span class="text-sm text-red-500">删除工单</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 获取URL参数
+        function getUrlParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        // 渲染工单详情
+        function renderWorkOrderDetail() {
+            const workOrderId = getUrlParam('id');
+            const workOrder = getWorkOrderById(workOrderId);
+
+            if (!workOrder) {
+                alert('工单不存在');
+                window.location.href = 'list.html';
+                return;
+            }
+
+            // 更新页面内容
+            document.getElementById('workOrderId').textContent = workOrder.id;
+            document.getElementById('workOrderTitle').textContent = workOrder.title;
+            document.getElementById('workOrderDesc').textContent = workOrder.description;
+            document.getElementById('workOrderType').textContent = workOrder.type;
+            document.getElementById('creatorName').textContent = workOrder.creator;
+            document.getElementById('assigneeName').textContent = workOrder.assignee;
+            document.getElementById('createTime').textContent = workOrder.createTime;
+            document.getElementById('updateTime').textContent = workOrder.updateTime;
+
+            // 状态标签
+            const statusBadge = document.getElementById('statusBadge');
+            statusBadge.textContent = getStatusText(workOrder.status);
+            statusBadge.className = `text-sm font-medium px-3 py-1 rounded-full ${getStatusClass(workOrder.status)}`;
+
+            // 优先级标签
+            const priorityBadge = document.getElementById('priorityBadge');
+            priorityBadge.textContent = getPriorityText(workOrder.priority) + '优先级';
+            priorityBadge.className = `text-sm px-2 py-0.5 rounded ${getPriorityClass(workOrder.priority)}`;
+
+            // 渲染时间轴
+            renderTimeline(workOrder.timeline);
+        }
+
+        // 渲染时间轴
+        function renderTimeline(timeline) {
+            const container = document.getElementById('timelineContainer');
+            container.innerHTML = timeline.map((item, index) => `
+                <div class="timeline-item">
+                    <div class="timeline-dot ${item.status}">
+                        <i class="fas ${item.icon}"></i>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-3">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-sm font-medium text-gray-800">${item.action}</span>
+                            <span class="text-xs text-gray-500">${item.time}</span>
+                        </div>
+                        <div class="text-xs text-gray-500">
+                            <i class="fas fa-user mr-1"></i>${item.user}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 弹窗控制
+        function openHandleModal() {
+            document.getElementById('handleModal').classList.remove('hidden');
+        }
+
+        function closeHandleModal() {
+            document.getElementById('handleModal').classList.add('hidden');
+        }
+
+        function openMoreModal() {
+            document.getElementById('moreModal').classList.remove('hidden');
+        }
+
+        function closeMoreModal() {
+            document.getElementById('moreModal').classList.add('hidden');
+        }
+
+        // 提交处理
+        function submitHandle() {
+            alert('处理成功！');
+            closeHandleModal();
+        }
+
+        // 按钮事件
+        document.getElementById('handleBtn').addEventListener('click', openHandleModal);
+        document.getElementById('moreBtn').addEventListener('click', openMoreModal);
+        document.getElementById('closeBtn').addEventListener('click', function() {
+            if (confirm('确认要关闭此工单吗？')) {
+                alert('工单已关闭');
+                window.location.href = 'list.html';
+            }
+        });
+
+        // 页面加载时执行
+        document.addEventListener('DOMContentLoaded', function() {
+            renderWorkOrderDetail();
+        });
+    </script>
+</body>
+</html>
