@@ -6,6 +6,8 @@
     <title>AI数据寻源助手</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="src/css/common.css">
+    <script src="src/data/mock.js"></script>
     <style>
         * {
             -webkit-tap-highlight-color: transparent;
@@ -62,7 +64,7 @@
             background-color: #F3F4F6;
         }
         .top-nav {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-color: #030714;
         }
     </style>
 </head>
@@ -70,19 +72,29 @@
     <!-- 顶部系统导航栏 -->
     <header class="top-nav fixed top-0 left-0 right-0 z-50 shadow-md">
         <div class="flex items-center justify-between px-4 h-14">
+            <!-- 左侧Logo -->
             <div class="flex items-center">
-                <button class="text-white mr-3" onclick="history.back()">
-                    <i class="fas fa-arrow-left text-lg"></i>
-                </button>
-                <h1 class="text-white text-lg font-semibold">AI数据寻源助手</h1>
+                <img src="src/images/logo.svg" alt="Logo" class="h-8">
             </div>
+            <!-- 右侧功能按钮 -->
             <div class="flex items-center space-x-3">
-                <button id="newChatBtn" class="text-white text-sm font-medium bg-white bg-opacity-20 px-3 py-1 rounded-full">
+                <button id="newChatBtn" class="nav-btn">
                     <i class="fas fa-plus-circle mr-1"></i>新会话
                 </button>
-                <button id="historyBtn" class="text-white">
+                <button id="historyBtn" class="nav-btn-icon">
                     <i class="fas fa-history text-lg"></i>
                 </button>
+                <!-- 账号组件 -->
+                <div class="avatar-dropdown">
+                    <button class="avatar-btn" id="avatarBtn">
+                        Z
+                    </button>
+                    <div class="dropdown-menu">
+                        <button class="menu-item logout" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i>退出登录
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
@@ -145,13 +157,13 @@
     </div>
 
     <!-- 底部Tab导航 -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-40">
+    <nav class="bottom-nav">
         <div class="flex items-center justify-around h-14">
-            <a href="index.html" class="bottom-tab flex flex-col items-center text-blue-500">
-                <i class="fas fa-robot text-xl mb-1"></i>
-                <span class="text-xs">AI助手</span>
+            <a href="index.html" class="bottom-tab active">
+                <i class="fas fa-search text-xl mb-1"></i>
+                <span class="text-xs">数据寻源</span>
             </a>
-            <a href="pages/list.html" class="bottom-tab flex flex-col items-center text-gray-400">
+            <a href="pages/list.html" class="bottom-tab">
                 <i class="fas fa-clipboard-list text-xl mb-1"></i>
                 <span class="text-xs">我的需求</span>
             </a>
@@ -437,8 +449,10 @@
                 `;
             }
 
-            let resourceCards = resources.map(res => `
-                <div class="resource-card bg-white rounded-xl p-4 shadow-sm mb-3 border border-gray-100">
+            let resourceCards = resources.map(res => {
+                const resourceId = getResourceIdByName(res.name) || '';
+                return `
+                <div class="resource-card bg-white rounded-xl p-4 shadow-sm mb-3 border border-gray-100 cursor-pointer" onclick="window.location.href='pages/resource-detail.html?id=${resourceId}'">
                     <div class="flex items-start justify-between mb-2">
                         <h3 class="text-base font-semibold text-gray-900">${res.name}</h3>
                         <span class="text-xs px-2 py-1 bg-purple-100 text-purple-600 rounded-full">${res.type}</span>
@@ -458,7 +472,7 @@
                         ${res.tags.map(tag => `<span class="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded">${tag}</span>`).join('')}
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
 
             return `
                 <div class="bg-white rounded-xl p-4 shadow-sm">
@@ -556,7 +570,17 @@
         // 页面加载
         document.addEventListener('DOMContentLoaded', function() {
             renderMessages();
+            setAvatarInitial();
+            initDropdownMenus();
         });
+
+        // 设置账号首字母
+        function setAvatarInitial() {
+            const avatarBtn = document.getElementById('avatarBtn');
+            if (avatarBtn && typeof currentUser !== 'undefined') {
+                avatarBtn.textContent = getInitials(currentUser.name);
+            }
+        }
     </script>
 </body>
 </html>

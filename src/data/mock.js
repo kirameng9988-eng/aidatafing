@@ -519,3 +519,204 @@ function generateWorkOrderId() {
     const num = String(mockWorkOrders.length + 1).padStart(3, '0');
     return `WO${year}${month}${day}${num}`;
 }
+
+// 数据资源详情
+const dataResourceDetails = {
+    "RES001": {
+        code: "RES001",
+        name: "实时线索行为数据",
+        description: "用户在产品内的所有行为数据，包括页面浏览、点击、表单提交、按钮点击等全量行为日志。该数据覆盖用户完整的交互路径，支持用户行为分析、转化漏斗分析、用户路径分析等多种分析场景。",
+        type: "数据集",
+        source: "神策数据",
+        organization: "数据中台部",
+        updateFreq: "实时",
+        tags: ["用户行为", "埋点数据"]
+    },
+    "RES002": {
+        code: "RES002",
+        name: "用户画像标签",
+        description: "包含用户的基础属性标签、兴趣标签、消费能力标签、行为偏好标签等多维度标签体系。支持用户分群、精准营销、个性化推荐等业务场景。",
+        type: "标签数据",
+        source: "数据中台",
+        organization: "数据中台部",
+        updateFreq: "T+1",
+        tags: ["用户画像", "标签"]
+    },
+    "RES003": {
+        code: "RES003",
+        name: "用户基础信息表",
+        description: "用户注册信息、实名认证信息、会员等级、账户状态等核心用户信息。是用户相关的核心主数据，与各业务系统保持同步。",
+        type: "主数据",
+        source: "CRM系统",
+        organization: "客户服务部",
+        updateFreq: "实时",
+        tags: ["用户信息", "主数据"]
+    },
+    "RES004": {
+        code: "RES004",
+        name: "订单交易明细",
+        description: "全量订单交易数据，包含订单金额、商品明细、支付方式、优惠信息、订单状态等完整订单信息。支持交易分析、销售统计、财务对账等场景。",
+        type: "数据集",
+        source: "交易系统",
+        organization: "交易结算部",
+        updateFreq: "实时",
+        tags: ["订单", "交易"]
+    },
+    "RES005": {
+        code: "RES005",
+        name: "订单履约数据",
+        description: "订单的履约状态、物流信息、签收情况、售后记录等完整履约链路数据。支持履约监控、物流分析、售后服务等业务。",
+        type: "数据集",
+        source: "履约中台",
+        organization: "供应链部",
+        updateFreq: "实时",
+        tags: ["履约", "物流"]
+    },
+    "RES006": {
+        code: "RES006",
+        name: "销售业绩数据",
+        description: "销售团队的业绩统计、目标完成率、环比同比数据、业绩排名等销售相关指标。支持销售分析、绩效考核、业绩预测等场景。",
+        type: "报表",
+        source: "销售BI系统",
+        organization: "销售部",
+        updateFreq: "每日",
+        tags: ["销售", "业绩"]
+    },
+    "RES007": {
+        code: "RES007",
+        name: "客户信息数据",
+        description: "企业客户档案、联系信息、客户等级、跟进记录、成单历史等客户全生命周期数据。是客户关系管理的核心数据。",
+        type: "主数据",
+        source: "CRM系统",
+        organization: "客户服务部",
+        updateFreq: "实时",
+        tags: ["客户", "CRM"]
+    },
+    "RES008": {
+        code: "RES008",
+        name: "线索转化漏斗",
+        description: "从线索获取、线索清洗、商机转化、成交签约的全链路转化数据。支持营销效果分析、转化率优化等场景。",
+        type: "报表",
+        source: "营销云",
+        organization: "市场部",
+        updateFreq: "T+1",
+        tags: ["线索", "转化"]
+    },
+    "RES009": {
+        code: "RES009",
+        name: "财务流水数据",
+        description: "全量财务收支流水，包含收入、支出、退款、调账等所有财务变动记录。是财务对账、资金分析的核心数据。",
+        type: "数据集",
+        source: "财务系统",
+        organization: "财务部",
+        updateFreq: "实时",
+        tags: ["财务", "流水"]
+    },
+    "RES010": {
+        code: "RES010",
+        name: "发票管理数据",
+        description: "开票记录、发票状态、发票金额、税率、购方信息等发票相关数据。支持发票管理、税务申报等业务场景。",
+        type: "数据集",
+        source: "税务系统",
+        organization: "财务部",
+        updateFreq: "每日",
+        tags: ["发票", "税务"]
+    }
+};
+
+// 资源名称到ID的映射
+const resourceNameToId = {
+    "实时线索行为数据": "RES001",
+    "用户画像标签": "RES002",
+    "用户基础信息表": "RES003",
+    "订单交易明细": "RES004",
+    "订单履约数据": "RES005",
+    "销售业绩数据": "RES006",
+    "客户信息数据": "RES007",
+    "线索转化漏斗": "RES008",
+    "财务流水数据": "RES009",
+    "发票管理数据": "RES010"
+};
+
+// 根据ID获取资源详情
+function getResourceById(id) {
+    return dataResourceDetails[id];
+}
+
+// 根据名称获取资源ID
+function getResourceIdByName(name) {
+    return resourceNameToId[name];
+}
+
+// 中文转拼音首字母（简单实现）
+function getInitials(name) {
+    // 常见汉字拼音首字母映射
+    const pinyinMap = {
+        '张': 'Z', '李': 'L', '王': 'W', '赵': 'Z', '刘': 'L',
+        '陈': 'C', '杨': 'Y', '黄': 'H', '周': 'Z', '吴': 'W',
+        '徐': 'X', '孙': 'S', '马': 'M', '朱': 'Z', '胡': 'H',
+        '郭': 'G', '何': 'H', '高': 'G', '林': 'L', '罗': 'L',
+        '郑': 'Z', '梁': 'L', '谢': 'X', '宋': 'S', '唐': 'T',
+        '许': 'X', '韩': 'H', '冯': 'F', '邓': 'D', '曹': 'C',
+        '彭': 'P', '曾': 'Z', '萧': 'X', '田': 'T', '董': 'D',
+        '袁': 'Y', '潘': 'P', '于': 'Y', '蒋': 'J', '蔡': 'C',
+        '余': 'Y', '杜': 'D', '叶': 'Y', '程': 'C', '苏': 'S',
+        '魏': 'W', '吕': 'L', '丁': 'D', '任': 'R', '沈': 'S'
+    };
+
+    if (!name || name.length === 0) return 'U';
+
+    const firstChar = name.charAt(0);
+
+    // 如果是英文字母，直接返回大写
+    if (/[a-zA-Z]/.test(firstChar)) {
+        return firstChar.toUpperCase();
+    }
+
+    // 如果是汉字，查找映射表
+    if (pinyinMap[firstChar]) {
+        return pinyinMap[firstChar];
+    }
+
+    // 默认返回第一个字符
+    return firstChar.toUpperCase();
+}
+
+// 退出登录
+function logout() {
+    if (confirm('确定要退出登录吗？')) {
+        alert('已退出登录');
+        // 实际项目中应跳转到登录页
+        // window.location.href = 'login.html';
+    }
+}
+
+// 初始化下拉菜单交互
+function initDropdownMenus() {
+    // 点击账号按钮切换下拉菜单
+    document.querySelectorAll('.avatar-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const menu = this.nextElementSibling;
+            if (menu && menu.classList.contains('dropdown-menu')) {
+                // 关闭其他下拉菜单
+                document.querySelectorAll('.dropdown-menu.show').forEach(m => {
+                    if (m !== menu) m.classList.remove('show');
+                });
+                menu.classList.toggle('show');
+            }
+        });
+    });
+
+    // 点击页面其他区域关闭下拉菜单
+    document.addEventListener('click', function() {
+        document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+            menu.classList.remove('show');
+        });
+    });
+}
+
+// 页面加载完成后初始化
+document.addEventListener('DOMContentLoaded', function() {
+    initDropdownMenus();
+});

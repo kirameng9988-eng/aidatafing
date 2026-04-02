@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>工单管理</title>
+    <title>我的需求</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../src/css/common.css">
     <script src="../src/data/mock.js"></script>
     <style>
         * {
@@ -15,13 +16,7 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background-color: #F3F4F6;
             padding-bottom: 70px;
-        }
-        .tab-item {
-            transition: all 0.3s ease;
-        }
-        .tab-item.active {
-            color: #3B82F6;
-            border-bottom: 2px solid #3B82F6;
+            padding-top: 56px;
         }
         .work-order-card {
             transition: all 0.2s ease;
@@ -39,17 +34,15 @@
             outline: none;
             border-color: #3B82F6;
         }
-        .add-btn {
-            transition: all 0.2s ease;
-        }
-        .add-btn:active {
-            transform: scale(0.95);
-        }
         .top-nav {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-color: #030714;
         }
-        body {
-            padding-top: 56px;
+        /* 下拉选择框样式 */
+        #statusFilter {
+            min-width: 90px;
+        }
+        #statusFilter:focus {
+            outline: none;
         }
     </style>
 </head>
@@ -57,44 +50,52 @@
     <!-- 顶部系统导航栏 -->
     <header class="top-nav fixed top-0 left-0 right-0 z-50 shadow-md">
         <div class="flex items-center justify-between px-4 h-14">
+            <!-- 左侧Logo -->
             <div class="flex items-center">
-                <button class="text-white mr-3" onclick="history.back()">
-                    <i class="fas fa-arrow-left text-lg"></i>
-                </button>
-                <h1 class="text-white text-lg font-semibold">我的需求</h1>
+                <img src="../src/images/logo.svg" alt="Logo" class="h-8">
             </div>
-            <button class="add-btn w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center text-white" id="addBtn">
-                <i class="fas fa-plus"></i>
-            </button>
+            <!-- 右侧功能按钮 -->
+            <div class="flex items-center space-x-3">
+                <button id="addBtn" class="nav-btn">
+                    <i class="fas fa-plus mr-1"></i>新增需求
+                </button>
+                <!-- 账号组件 -->
+                <div class="avatar-dropdown">
+                    <button class="avatar-btn" id="avatarBtn">
+                        Z
+                    </button>
+                    <div class="dropdown-menu">
+                        <button class="menu-item logout" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i>退出登录
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
 
-    <!-- 搜索栏 -->
+    <!-- 搜索栏和筛选 -->
     <div class="bg-white px-4 py-3 border-b border-gray-200">
-        <div class="relative">
-            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-            <input type="text"
-                   id="searchInput"
-                   placeholder="搜索工单标题、编号..."
-                   class="search-input w-full pl-10 pr-4 py-2 bg-gray-100 rounded-lg text-sm border border-transparent">
-        </div>
-    </div>
-
-    <!-- 状态筛选Tab -->
-    <div class="bg-white border-b border-gray-200">
-        <div class="flex items-center justify-around" id="statusTabs">
-            <button class="tab-item flex-1 py-3 text-sm font-medium active" data-status="all">
-                全部
-            </button>
-            <button class="tab-item flex-1 py-3 text-sm font-medium text-gray-500" data-status="pending">
-                待处理
-            </button>
-            <button class="tab-item flex-1 py-3 text-sm font-medium text-gray-500" data-status="processing">
-                进行中
-            </button>
-            <button class="tab-item flex-1 py-3 text-sm font-medium text-gray-500" data-status="completed">
-                已完成
-            </button>
+        <div class="flex items-center space-x-2">
+            <!-- 搜索框 -->
+            <div class="flex-1 relative">
+                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                <input type="text"
+                       id="searchInput"
+                       placeholder="搜索工单标题、编号..."
+                       class="search-input w-full pl-10 pr-4 py-2 bg-gray-100 rounded-lg text-sm border border-transparent">
+            </div>
+            <!-- 状态筛选下拉 -->
+            <div class="relative">
+                <select id="statusFilter" class="appearance-none bg-gray-100 border-none rounded-lg px-3 py-2 pr-8 text-sm text-gray-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="all">全部状态</option>
+                    <option value="pending">待处理</option>
+                    <option value="processing">进行中</option>
+                    <option value="completed">已完成</option>
+                    <option value="closed">已关闭</option>
+                </select>
+                <i class="fas fa-chevron-down absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none text-xs"></i>
+            </div>
         </div>
     </div>
 
@@ -117,11 +118,11 @@
     <!-- 底部Tab导航 -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-40">
         <div class="flex items-center justify-around h-14">
-            <a href="../index.html" class="bottom-tab flex flex-col items-center text-gray-400">
-                <i class="fas fa-robot text-xl mb-1"></i>
-                <span class="text-xs">AI助手</span>
+            <a href="../index.html" class="bottom-tab">
+                <i class="fas fa-search text-xl mb-1"></i>
+                <span class="text-xs">数据寻源</span>
             </a>
-            <a href="list.html" class="bottom-tab flex flex-col items-center text-blue-500">
+            <a href="list.html" class="bottom-tab active">
                 <i class="fas fa-clipboard-list text-xl mb-1"></i>
                 <span class="text-xs">我的需求</span>
             </a>
@@ -237,6 +238,13 @@
                 );
             }
 
+            // 按创建时间倒序排列
+            filteredOrders.sort((a, b) => {
+                const timeA = new Date(a.createTime).getTime();
+                const timeB = new Date(b.createTime).getTime();
+                return timeB - timeA;
+            });
+
             if (filteredOrders.length === 0) {
                 listContainer.innerHTML = '';
                 emptyState.classList.remove('hidden');
@@ -274,40 +282,18 @@
             `).join('');
         }
 
-        // 初始化Tab状态
-        function initTabs() {
+        // 初始化状态筛选
+        function initStatusFilter() {
             const statusFromUrl = getUrlParam('status');
             if (statusFromUrl) {
                 currentStatus = statusFromUrl;
+                document.getElementById('statusFilter').value = statusFromUrl;
             }
-
-            const tabs = document.querySelectorAll('.tab-item');
-            tabs.forEach(tab => {
-                if (tab.dataset.status === currentStatus) {
-                    tab.classList.add('active');
-                    tab.classList.remove('text-gray-500');
-                } else {
-                    tab.classList.remove('active');
-                    tab.classList.add('text-gray-500');
-                }
-            });
         }
 
-        // Tab切换事件
-        document.getElementById('statusTabs').addEventListener('click', function(e) {
-            const tab = e.target.closest('.tab-item');
-            if (!tab) return;
-
-            currentStatus = tab.dataset.status;
-
-            // 更新Tab样式
-            document.querySelectorAll('.tab-item').forEach(t => {
-                t.classList.remove('active');
-                t.classList.add('text-gray-500');
-            });
-            tab.classList.add('active');
-            tab.classList.remove('text-gray-500');
-
+        // 状态筛选下拉事件
+        document.getElementById('statusFilter').addEventListener('change', function(e) {
+            currentStatus = e.target.value;
             renderWorkOrderList();
         });
 
@@ -409,9 +395,19 @@
 
         // 页面加载时执行
         document.addEventListener('DOMContentLoaded', function() {
-            initTabs();
+            initStatusFilter();
             renderWorkOrderList();
+            setAvatarInitial();
+            initDropdownMenus();
         });
+
+        // 设置账号首字母
+        function setAvatarInitial() {
+            const avatarBtn = document.getElementById('avatarBtn');
+            if (avatarBtn && typeof currentUser !== 'undefined') {
+                avatarBtn.textContent = getInitials(currentUser.name);
+            }
+        }
     </script>
 </body>
 </html>

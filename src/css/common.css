@@ -1,0 +1,213 @@
+/* 公共样式 - 需求工管管理系统H5原型 */
+
+/* 顶部导航栏样式 */
+.top-nav {
+    background-color: #030714;
+}
+
+/* 返回按钮样式 */
+.back-btn {
+    color: white;
+    margin-right: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.back-btn:hover {
+    opacity: 0.8;
+}
+
+.back-btn:active {
+    transform: scale(0.95);
+}
+
+/* Logo图片样式 */
+.logo-img {
+    height: 32px;
+    width: auto;
+}
+
+/* 账号下拉组件样式 */
+.avatar-dropdown {
+    position: relative;
+}
+
+.avatar-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #2563eb;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.avatar-btn:hover {
+    background-color: #1d4ed8;
+    transform: scale(1.05);
+}
+
+.avatar-btn:active {
+    transform: scale(0.95);
+}
+
+/* 下拉菜单样式 */
+.dropdown-menu {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    margin-top: 8px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    padding: 8px 0;
+    min-width: 120px;
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+}
+
+.dropdown-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-menu .menu-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 10px 16px;
+    text-align: left;
+    font-size: 14px;
+    color: #374151;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.dropdown-menu .menu-item:hover {
+    background-color: #f3f4f6;
+}
+
+.dropdown-menu .menu-item i {
+    margin-right: 8px;
+    width: 16px;
+    text-align: center;
+}
+
+.dropdown-menu .menu-item.logout {
+    color: #ef4444;
+}
+
+.dropdown-menu .menu-item.logout:hover {
+    background-color: #fef2f2;
+}
+
+/* 底部导航样式 */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: white;
+    border-top: 1px solid #e5e7eb;
+    z-index: 40;
+}
+
+.bottom-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    transition: all 0.2s ease;
+    color: #9ca3af;
+    text-decoration: none;
+}
+
+.bottom-tab:active {
+    transform: scale(0.95);
+}
+
+.bottom-tab.active {
+    color: #3b82f6;
+}
+
+.bottom-tab i {
+    font-size: 20px;
+    margin-bottom: 4px;
+}
+
+.bottom-tab span {
+    font-size: 12px;
+}
+
+/* 导航按钮样式 */
+.nav-btn {
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 6px 12px;
+    border-radius: 16px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+}
+
+.nav-btn:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.nav-btn:active {
+    transform: scale(0.95);
+}
+
+.nav-btn-icon {
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    transition: all 0.2s ease;
+}
+
+.nav-btn-icon:hover {
+    opacity: 0.8;
+}
+
+.nav-btn-icon:active {
+    transform: scale(0.95);
+}
+
+/* 响应式调整 */
+@media (max-width: 360px) {
+    .nav-btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+
+    .avatar-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+    }
+}

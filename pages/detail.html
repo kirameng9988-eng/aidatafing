@@ -6,6 +6,7 @@
     <title>工单详情</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../src/css/common.css">
     <script src="../src/data/mock.js"></script>
     <style>
         * {
@@ -18,7 +19,7 @@
             padding-bottom: 100px;
         }
         .top-nav {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-color: #030714;
         }
         .timeline-item {
             position: relative;
@@ -83,14 +84,27 @@
     <header class="top-nav fixed top-0 left-0 right-0 z-50 shadow-md">
         <div class="flex items-center justify-between px-4 h-14">
             <div class="flex items-center">
-                <a href="list.html" class="text-white mr-3">
+                <a href="list.html" class="back-btn">
                     <i class="fas fa-arrow-left text-lg"></i>
                 </a>
-                <h1 class="text-white text-base font-semibold" id="workOrderId">WO20260401001</h1>
+                <span class="text-white text-base font-semibold" id="workOrderId">WO20260401001</span>
             </div>
-            <button class="text-white" id="moreBtn">
-                <i class="fas fa-ellipsis-v text-lg"></i>
-            </button>
+            <div class="flex items-center space-x-3">
+                <button class="text-white" id="moreBtn">
+                    <i class="fas fa-ellipsis-v text-lg"></i>
+                </button>
+                <!-- 账号组件 -->
+                <div class="avatar-dropdown">
+                    <button class="avatar-btn" id="avatarBtn">
+                        Z
+                    </button>
+                    <div class="dropdown-menu">
+                        <button class="menu-item logout" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i>退出登录
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -330,7 +344,17 @@
         // 页面加载时执行
         document.addEventListener('DOMContentLoaded', function() {
             renderWorkOrderDetail();
+            setAvatarInitial();
+            initDropdownMenus();
         });
+
+        // 设置账号首字母
+        function setAvatarInitial() {
+            const avatarBtn = document.getElementById('avatarBtn');
+            if (avatarBtn && typeof currentUser !== 'undefined') {
+                avatarBtn.textContent = getInitials(currentUser.name);
+            }
+        }
     </script>
 </body>
 </html>
