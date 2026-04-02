@@ -1,426 +1,482 @@
-// 模拟数据 - 工单列表
+// 模拟数据 - 需求工单列表
 const mockWorkOrders = [
     {
-        id: "WO20260401001",
-        title: "用户登录功能优化",
-        description: "优化用户登录体验，增加微信、钉钉等第三方登录方式，提升用户登录便捷性和系统安全性。",
-        priority: "high",
-        status: "processing",
-        type: "功能需求",
+        id: "REQ20260401001",
+        coreContent: "用户行为数据分析需求",
+        coverage: "全平台用户",
+        timeRange: "2026-04-01 至 2026-06-30",
+        coreFields: "用户ID、行为类型、页面路径、停留时长、设备信息",
+        deliveryFreq: "T+1",
+        budget: "10-20万",
+        compliance: "数据脱敏、访问审计",
+        remark: "需要支持实时查询和历史数据分析，数据保留6个月",
+        status: "sourcing",
         creator: "张三",
-        assignee: "李四",
         createTime: "2026-04-01 10:00",
         updateTime: "2026-04-01 15:30",
-        progress: 60,
         timeline: [
             {
                 time: "2026-04-01 10:00",
                 user: "张三",
-                action: "创建工单",
-                status: "pending",
+                action: "提交需求",
+                status: "submitted",
                 icon: "fa-plus-circle"
             },
             {
-                time: "2026-04-01 14:00",
-                user: "李四",
-                action: "开始处理",
-                status: "processing",
-                icon: "fa-play-circle"
+                time: "2026-04-01 11:00",
+                user: "数据中台",
+                action: "已受理",
+                status: "accepted",
+                icon: "fa-check-circle"
             },
             {
-                time: "2026-04-01 15:30",
-                user: "李四",
-                action: "完成开发",
-                status: "processing",
-                icon: "fa-code"
+                time: "2026-04-01 14:00",
+                user: "数据中台",
+                action: "开始寻源",
+                status: "sourcing",
+                icon: "fa-search"
             }
         ]
     },
     {
-        id: "WO20260401002",
-        title: "数据报表导出功能",
-        description: "新增数据报表导出功能，支持Excel和PDF格式导出，方便用户进行数据分析。",
-        priority: "medium",
-        status: "pending",
-        type: "功能需求",
+        id: "REQ20260331002",
+        coreContent: "销售业绩统计报表数据",
+        coverage: "销售部全员",
+        timeRange: "2026-04-01 至 2026-12-31",
+        coreFields: "销售额、订单量、客户数、转化率、环比增长",
+        deliveryFreq: "每日",
+        budget: "5-10万",
+        compliance: "数据权限控制",
+        remark: "需要支持按团队、个人、产品线多维度统计",
+        status: "submitted",
         creator: "王五",
-        assignee: "赵六",
         createTime: "2026-03-31 16:20",
         updateTime: "2026-03-31 16:20",
-        progress: 0,
         timeline: [
             {
                 time: "2026-03-31 16:20",
                 user: "王五",
-                action: "创建工单",
-                status: "pending",
+                action: "提交需求",
+                status: "submitted",
                 icon: "fa-plus-circle"
             }
         ]
     },
     {
-        id: "WO20260331003",
-        title: "移动端页面适配问题",
-        description: "部分页面在iOS设备上显示异常，需要进行兼容性修复。",
-        priority: "high",
-        status: "processing",
-        type: "Bug修复",
+        id: "REQ20260330003",
+        coreContent: "客户画像标签数据",
+        coverage: "全量客户",
+        timeRange: "2026-04-01 至 2026-09-30",
+        coreFields: "客户ID、标签类型、标签值、更新时间",
+        deliveryFreq: "T+1",
+        budget: "20-30万",
+        compliance: "数据脱敏、访问审计、权限审批",
+        remark: "用于精准营销和客户分群，需要与CRM系统对接",
+        status: "accepted",
         creator: "赵六",
-        assignee: "张三",
         createTime: "2026-03-30 09:15",
-        updateTime: "2026-03-31 11:20",
-        progress: 80,
+        updateTime: "2026-03-30 14:00",
         timeline: [
             {
                 time: "2026-03-30 09:15",
                 user: "赵六",
-                action: "创建工单",
-                status: "pending",
+                action: "提交需求",
+                status: "submitted",
                 icon: "fa-plus-circle"
             },
             {
-                time: "2026-03-30 10:00",
-                user: "张三",
-                action: "开始处理",
-                status: "processing",
-                icon: "fa-play-circle"
-            },
-            {
-                time: "2026-03-31 11:20",
-                user: "张三",
-                action: "修复完成，等待测试",
-                status: "processing",
+                time: "2026-03-30 14:00",
+                user: "数据中台",
+                action: "已受理",
+                status: "accepted",
                 icon: "fa-check-circle"
             }
         ]
     },
     {
-        id: "WO20260330004",
-        title: "首页加载速度优化",
-        description: "首页加载时间过长，需要优化数据库查询和前端资源加载。",
-        priority: "medium",
+        id: "REQ20260328004",
+        coreContent: "订单交易明细数据",
+        coverage: "近3年订单",
+        timeRange: "2026-04-01 至 2026-06-30",
+        coreFields: "订单号、商品明细、金额、支付方式、优惠信息",
+        deliveryFreq: "实时",
+        budget: "15-25万",
+        compliance: "数据加密、访问审计",
+        remark: "支持财务对账和交易分析",
         status: "completed",
-        type: "性能优化",
         creator: "李四",
-        assignee: "王五",
         createTime: "2026-03-28 14:30",
-        updateTime: "2026-03-30 16:45",
-        progress: 100,
+        updateTime: "2026-04-02 10:00",
         timeline: [
             {
                 time: "2026-03-28 14:30",
                 user: "李四",
-                action: "创建工单",
-                status: "pending",
+                action: "提交需求",
+                status: "submitted",
                 icon: "fa-plus-circle"
             },
             {
-                time: "2026-03-29 09:00",
-                user: "王五",
-                action: "开始处理",
-                status: "processing",
-                icon: "fa-play-circle"
+                time: "2026-03-28 16:00",
+                user: "数据中台",
+                action: "已受理",
+                status: "accepted",
+                icon: "fa-check-circle"
             },
             {
-                time: "2026-03-30 16:45",
-                user: "王五",
-                action: "优化完成",
+                time: "2026-03-29 09:00",
+                user: "数据中台",
+                action: "开始寻源",
+                status: "sourcing",
+                icon: "fa-search"
+            },
+            {
+                time: "2026-04-02 10:00",
+                user: "数据中台",
+                action: "寻源完成",
                 status: "completed",
-                icon: "fa-check-circle"
+                icon: "fa-check-double"
             }
         ]
     },
     {
-        id: "WO20260329005",
-        title: "用户权限管理模块",
-        description: "新增用户权限管理功能，支持角色和权限的灵活配置。",
-        priority: "high",
+        id: "REQ20260325005",
+        coreContent: "财务流水数据对接",
+        coverage: "全量财务数据",
+        timeRange: "2026-04-01 至 2026-12-31",
+        coreFields: "流水号、收支类型、金额、账户、时间、摘要",
+        deliveryFreq: "实时",
+        budget: "30-50万",
+        compliance: "数据加密、访问审计、审批流程、合规审查",
+        remark: "需要与财务系统实时对接，支持自动对账",
         status: "completed",
-        type: "功能需求",
         creator: "张三",
-        assignee: "李四",
         createTime: "2026-03-25 11:00",
-        updateTime: "2026-03-29 17:30",
-        progress: 100,
+        updateTime: "2026-03-30 17:30",
         timeline: [
             {
                 time: "2026-03-25 11:00",
                 user: "张三",
-                action: "创建工单",
-                status: "pending",
+                action: "提交需求",
+                status: "submitted",
                 icon: "fa-plus-circle"
             },
             {
-                time: "2026-03-26 09:00",
-                user: "李四",
-                action: "开始处理",
-                status: "processing",
-                icon: "fa-play-circle"
+                time: "2026-03-25 14:00",
+                user: "数据中台",
+                action: "已受理",
+                status: "accepted",
+                icon: "fa-check-circle"
             },
             {
-                time: "2026-03-29 17:30",
-                user: "李四",
-                action: "功能上线",
+                time: "2026-03-26 09:00",
+                user: "数据中台",
+                action: "开始寻源",
+                status: "sourcing",
+                icon: "fa-search"
+            },
+            {
+                time: "2026-03-30 17:30",
+                user: "数据中台",
+                action: "寻源完成",
                 status: "completed",
-                icon: "fa-check-circle"
+                icon: "fa-check-double"
             }
         ]
     },
     {
-        id: "WO20260328006",
-        title: "系统消息通知功能",
-        description: "实现系统消息推送功能，支持站内消息和邮件通知。",
-        priority: "low",
+        id: "REQ20260320006",
+        coreContent: "历史数据迁移需求",
+        coverage: "2020-2025历史数据",
+        timeRange: "2026-03-20 至 2026-04-15",
+        coreFields: "用户信息、订单数据、交易记录",
+        deliveryFreq: "一次性",
+        budget: "5万以内",
+        compliance: "数据脱敏",
+        remark: "旧系统数据迁移到新数据平台",
         status: "closed",
-        type: "功能需求",
         creator: "王五",
-        assignee: "赵六",
         createTime: "2026-03-20 10:30",
         updateTime: "2026-03-28 14:00",
-        progress: 100,
         timeline: [
             {
                 time: "2026-03-20 10:30",
                 user: "王五",
-                action: "创建工单",
-                status: "pending",
+                action: "提交需求",
+                status: "submitted",
                 icon: "fa-plus-circle"
             },
             {
-                time: "2026-03-22 09:00",
-                user: "赵六",
-                action: "开始处理",
-                status: "processing",
-                icon: "fa-play-circle"
-            },
-            {
-                time: "2026-03-27 16:00",
-                user: "赵六",
-                action: "功能完成",
-                status: "completed",
+                time: "2026-03-20 15:00",
+                user: "数据中台",
+                action: "已受理",
+                status: "accepted",
                 icon: "fa-check-circle"
             },
             {
+                time: "2026-03-21 09:00",
+                user: "数据中台",
+                action: "开始寻源",
+                status: "sourcing",
+                icon: "fa-search"
+            },
+            {
+                time: "2026-03-27 16:00",
+                user: "数据中台",
+                action: "寻源完成",
+                status: "completed",
+                icon: "fa-check-double"
+            },
+            {
                 time: "2026-03-28 14:00",
-                user: "系统",
-                action: "工单关闭",
+                user: "王五",
+                action: "需求关闭",
                 status: "closed",
                 icon: "fa-times-circle"
             }
         ]
     },
     {
-        id: "WO20260327007",
-        title: "数据备份恢复功能",
-        description: "增加系统数据自动备份和手动恢复功能，保障数据安全。",
-        priority: "medium",
-        status: "pending",
-        type: "功能需求",
+        id: "REQ20260327007",
+        coreContent: "运营活动效果分析数据",
+        coverage: "近期活动用户",
+        timeRange: "2026-04-01 至 2026-04-30",
+        coreFields: "活动ID、参与用户、转化率、ROI、渠道来源",
+        deliveryFreq: "T+1",
+        budget: "5-10万",
+        compliance: "数据脱敏",
+        remark: "用于评估运营活动效果，优化活动策略",
+        status: "submitted",
         creator: "李四",
-        assignee: "张三",
         createTime: "2026-03-27 15:45",
         updateTime: "2026-03-27 15:45",
-        progress: 0,
         timeline: [
             {
                 time: "2026-03-27 15:45",
                 user: "李四",
-                action: "创建工单",
-                status: "pending",
+                action: "提交需求",
+                status: "submitted",
                 icon: "fa-plus-circle"
             }
         ]
     },
     {
-        id: "WO20260326008",
-        title: "操作日志记录功能",
-        description: "记录用户操作日志，支持日志查询和导出。",
-        priority: "low",
-        status: "processing",
-        type: "功能需求",
+        id: "REQ20260326008",
+        coreContent: "用户留存分析数据",
+        coverage: "新注册用户",
+        timeRange: "2026-04-01 至 2026-06-30",
+        coreFields: "用户ID、注册时间、登录频次、活跃度、留存天数",
+        deliveryFreq: "每周",
+        budget: "10-15万",
+        compliance: "数据脱敏、访问审计",
+        remark: "分析用户留存情况，支持产品优化决策",
+        status: "sourcing",
         creator: "赵六",
-        assignee: "王五",
         createTime: "2026-03-26 11:20",
         updateTime: "2026-03-30 10:15",
-        progress: 40,
         timeline: [
             {
                 time: "2026-03-26 11:20",
                 user: "赵六",
-                action: "创建工单",
-                status: "pending",
+                action: "提交需求",
+                status: "submitted",
                 icon: "fa-plus-circle"
             },
             {
-                time: "2026-03-28 14:00",
-                user: "王五",
-                action: "开始处理",
-                status: "processing",
-                icon: "fa-play-circle"
+                time: "2026-03-27 09:00",
+                user: "数据中台",
+                action: "已受理",
+                status: "accepted",
+                icon: "fa-check-circle"
             },
             {
-                time: "2026-03-30 10:15",
-                user: "王五",
-                action: "数据库设计完成",
-                status: "processing",
-                icon: "fa-database"
+                time: "2026-03-28 14:00",
+                user: "数据中台",
+                action: "开始寻源",
+                status: "sourcing",
+                icon: "fa-search"
             }
         ]
     },
     {
-        id: "WO20260325009",
-        title: "批量数据导入功能",
-        description: "支持Excel批量导入用户数据和工单数据。",
-        priority: "medium",
+        id: "REQ20260325009",
+        coreContent: "商品库存数据同步",
+        coverage: "全量SKU",
+        timeRange: "2026-04-01 至 2026-12-31",
+        coreFields: "SKU编码、库存数量、仓库位置、预警阈值",
+        deliveryFreq: "实时",
+        budget: "8-12万",
+        compliance: "数据权限控制",
+        remark: "实时同步各仓库库存数据，支持库存预警",
         status: "completed",
-        type: "功能需求",
         creator: "张三",
-        assignee: "李四",
         createTime: "2026-03-25 09:30",
-        updateTime: "2026-03-28 17:00",
-        progress: 100,
+        updateTime: "2026-03-29 17:00",
         timeline: [
             {
                 time: "2026-03-25 09:30",
                 user: "张三",
-                action: "创建工单",
-                status: "pending",
+                action: "提交需求",
+                status: "submitted",
                 icon: "fa-plus-circle"
             },
             {
-                time: "2026-03-26 10:00",
-                user: "李四",
-                action: "开始处理",
-                status: "processing",
-                icon: "fa-play-circle"
+                time: "2026-03-25 11:00",
+                user: "数据中台",
+                action: "已受理",
+                status: "accepted",
+                icon: "fa-check-circle"
             },
             {
-                time: "2026-03-28 17:00",
-                user: "李四",
-                action: "功能上线",
+                time: "2026-03-26 09:00",
+                user: "数据中台",
+                action: "开始寻源",
+                status: "sourcing",
+                icon: "fa-search"
+            },
+            {
+                time: "2026-03-29 17:00",
+                user: "数据中台",
+                action: "寻源完成",
                 status: "completed",
-                icon: "fa-check-circle"
+                icon: "fa-check-double"
             }
         ]
     },
     {
-        id: "WO20260324010",
-        title: "系统界面主题定制",
-        description: "支持用户自定义系统主题颜色和布局风格。",
-        priority: "low",
+        id: "REQ20260324010",
+        coreContent: "供应链数据对接",
+        coverage: "供应商数据",
+        timeRange: "2026-04-01 至 2026-09-30",
+        coreFields: "供应商ID、供货周期、质量评分、价格变动",
+        deliveryFreq: "每日",
+        budget: "20-30万",
+        compliance: "数据加密、访问审计、审批流程",
+        remark: "对接供应商系统，实现供应链数据可视化",
         status: "closed",
-        type: "功能需求",
         creator: "王五",
-        assignee: "赵六",
         createTime: "2026-03-24 14:00",
         updateTime: "2026-03-27 16:30",
-        progress: 100,
         timeline: [
             {
                 time: "2026-03-24 14:00",
                 user: "王五",
-                action: "创建工单",
-                status: "pending",
+                action: "提交需求",
+                status: "submitted",
                 icon: "fa-plus-circle"
             },
             {
-                time: "2026-03-25 09:00",
-                user: "赵六",
-                action: "开始处理",
-                status: "processing",
-                icon: "fa-play-circle"
-            },
-            {
-                time: "2026-03-26 17:00",
-                user: "赵六",
-                action: "功能完成",
-                status: "completed",
+                time: "2026-03-24 16:00",
+                user: "数据中台",
+                action: "已受理",
+                status: "accepted",
                 icon: "fa-check-circle"
             },
             {
+                time: "2026-03-25 09:00",
+                user: "数据中台",
+                action: "开始寻源",
+                status: "sourcing",
+                icon: "fa-search"
+            },
+            {
+                time: "2026-03-26 17:00",
+                user: "数据中台",
+                action: "寻源完成",
+                status: "completed",
+                icon: "fa-check-double"
+            },
+            {
                 time: "2026-03-27 16:30",
-                user: "系统",
-                action: "工单关闭",
+                user: "王五",
+                action: "需求关闭",
                 status: "closed",
                 icon: "fa-times-circle"
             }
         ]
     },
     {
-        id: "WO20260323011",
-        title: "移动端推送通知",
-        description: "实现移动端APP推送通知功能。",
-        priority: "high",
-        status: "pending",
-        type: "功能需求",
+        id: "REQ20260323011",
+        coreContent: "竞品价格监控数据",
+        coverage: "主要竞品",
+        timeRange: "2026-04-01 至 2026-12-31",
+        coreFields: "竞品名称、商品价格、促销信息、库存状态",
+        deliveryFreq: "每日",
+        budget: "10-15万",
+        compliance: "公开数据采集",
+        remark: "监控竞品价格变化，支持定价策略",
+        status: "submitted",
         creator: "李四",
-        assignee: "张三",
         createTime: "2026-03-23 16:45",
         updateTime: "2026-03-23 16:45",
-        progress: 0,
         timeline: [
             {
                 time: "2026-03-23 16:45",
                 user: "李四",
-                action: "创建工单",
-                status: "pending",
+                action: "提交需求",
+                status: "submitted",
                 icon: "fa-plus-circle"
             }
         ]
     },
     {
-        id: "WO20260322012",
-        title: "API接口文档完善",
-        description: "完善系统API接口文档，提供详细的接口说明和示例。",
-        priority: "medium",
-        status: "processing",
-        type: "文档完善",
+        id: "REQ20260322012",
+        coreContent: "会员积分数据统计",
+        coverage: "全量会员",
+        timeRange: "2026-04-01 至 2026-06-30",
+        coreFields: "会员ID、积分余额、获取记录、消费记录、过期时间",
+        deliveryFreq: "T+1",
+        compliance: "数据脱敏、访问审计",
+        remark: "统计会员积分情况，支持会员运营",
+        status: "accepted",
         creator: "赵六",
-        assignee: "王五",
         createTime: "2026-03-22 10:30",
         updateTime: "2026-03-29 15:20",
-        progress: 70,
         timeline: [
             {
                 time: "2026-03-22 10:30",
                 user: "赵六",
-                action: "创建工单",
-                status: "pending",
+                action: "提交需求",
+                status: "submitted",
                 icon: "fa-plus-circle"
             },
             {
-                time: "2026-03-24 09:00",
-                user: "王五",
-                action: "开始处理",
-                status: "processing",
-                icon: "fa-play-circle"
-            },
-            {
                 time: "2026-03-29 15:20",
-                user: "王五",
-                action: "文档编写中",
-                status: "processing",
-                icon: "fa-file-alt"
+                user: "数据中台",
+                action: "已受理",
+                status: "accepted",
+                icon: "fa-check-circle"
             }
         ]
     }
 ];
 
-// 工单类型
-const workOrderTypes = [
-    "功能需求",
-    "Bug修复",
-    "性能优化",
-    "文档完善",
-    "界面优化",
-    "其他"
+// 交付频率选项
+const deliveryFreqOptions = [
+    "实时",
+    "T+1",
+    "每日",
+    "每周",
+    "每月",
+    "一次性"
+];
+
+// 预算范围选项
+const budgetOptions = [
+    "5万以内",
+    "5-10万",
+    "10-15万",
+    "15-20万",
+    "20-30万",
+    "30-50万",
+    "50万以上"
 ];
 
 // 统计数据
 const statistics = {
-    pending: 4,
-    processing: 4,
-    completed: 2,
+    submitted: 3,
+    accepted: 2,
+    sourcing: 2,
+    completed: 3,
     closed: 2
 };
 
@@ -450,9 +506,10 @@ function getWorkOrderById(id) {
 // 获取状态文本
 function getStatusText(status) {
     const statusMap = {
-        'pending': '待处理',
-        'processing': '进行中',
-        'completed': '已完成',
+        'submitted': '需求提交',
+        'accepted': '已受理',
+        'sourcing': '寻源中',
+        'completed': '寻源完成',
         'closed': '已关闭'
     };
     return statusMap[status] || status;
@@ -461,32 +518,25 @@ function getStatusText(status) {
 // 获取状态样式类
 function getStatusClass(status) {
     const classMap = {
-        'pending': 'bg-red-100 text-red-600',
-        'processing': 'bg-blue-100 text-blue-600',
+        'submitted': 'bg-orange-100 text-orange-600',
+        'accepted': 'bg-blue-100 text-blue-600',
+        'sourcing': 'bg-purple-100 text-purple-600',
         'completed': 'bg-green-100 text-green-600',
         'closed': 'bg-gray-100 text-gray-600'
     };
     return classMap[status] || 'bg-gray-100 text-gray-600';
 }
 
-// 获取优先级文本
-function getPriorityText(priority) {
-    const priorityMap = {
-        'high': '高',
-        'medium': '中',
-        'low': '低'
+// 获取状态图标
+function getStatusIcon(status) {
+    const iconMap = {
+        'submitted': 'fa-paper-plane',
+        'accepted': 'fa-check-circle',
+        'sourcing': 'fa-search',
+        'completed': 'fa-check-double',
+        'closed': 'fa-times-circle'
     };
-    return priorityMap[priority] || priority;
-}
-
-// 获取优先级样式类
-function getPriorityClass(priority) {
-    const classMap = {
-        'high': 'bg-red-100 text-red-600',
-        'medium': 'bg-yellow-100 text-yellow-600',
-        'low': 'bg-blue-100 text-blue-600'
-    };
-    return classMap[priority] || 'bg-gray-100 text-gray-600';
+    return iconMap[status] || 'fa-circle';
 }
 
 // 格式化时间
@@ -510,132 +560,132 @@ function formatTime(timeStr) {
     }
 }
 
-// 生成工单ID
+// 生成需求编号
 function generateWorkOrderId() {
     const now = new Date();
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, '0');
     const day = String(now.getDate()).padStart(2, '0');
     const num = String(mockWorkOrders.length + 1).padStart(3, '0');
-    return `WO${year}${month}${day}${num}`;
+    return `REQ${year}${month}${day}${num}`;
 }
 
 // 数据资源详情
 const dataResourceDetails = {
     "RES001": {
         code: "RES001",
-        name: "实时线索行为数据",
-        description: "用户在产品内的所有行为数据，包括页面浏览、点击、表单提交、按钮点击等全量行为日志。该数据覆盖用户完整的交互路径，支持用户行为分析、转化漏斗分析、用户路径分析等多种分析场景。",
+        name: "企业工商信息数据",
+        description: "包含企业基础工商信息、股东信息、对外投资、变更记录等企业信用数据。支持企业尽职调查、风险评估、商业决策等场景。",
         type: "数据集",
-        source: "神策数据",
-        organization: "数据中台部",
-        updateFreq: "实时",
-        tags: ["用户行为", "埋点数据"]
+        source: "公共数据授权运营服务平台",
+        organization: "上海市大数据中心",
+        updateFreq: "每日",
+        tags: ["工商信息", "企业信用"]
     },
     "RES002": {
         code: "RES002",
-        name: "用户画像标签",
-        description: "包含用户的基础属性标签、兴趣标签、消费能力标签、行为偏好标签等多维度标签体系。支持用户分群、精准营销、个性化推荐等业务场景。",
-        type: "标签数据",
-        source: "数据中台",
-        organization: "数据中台部",
-        updateFreq: "T+1",
-        tags: ["用户画像", "标签"]
+        name: "企业纳税信用数据",
+        description: "企业纳税信用等级、欠税信息、税务违法记录等纳税相关数据。支持企业信用评估、风险预警等业务场景。",
+        type: "数据集",
+        source: "公共数据授权运营服务平台",
+        organization: "上海市税务局",
+        updateFreq: "每月",
+        tags: ["纳税", "信用评级"]
     },
     "RES003": {
         code: "RES003",
-        name: "用户基础信息表",
-        description: "用户注册信息、实名认证信息、会员等级、账户状态等核心用户信息。是用户相关的核心主数据，与各业务系统保持同步。",
-        type: "主数据",
-        source: "CRM系统",
-        organization: "客户服务部",
+        name: "公共信用信息数据",
+        description: "包含企业及个人的公共信用信息，如行政处罚、荣誉奖励、失信记录等。支持信用查询、合规审查等场景。",
+        type: "数据集",
+        source: "公共数据授权运营服务平台",
+        organization: "上海市发改委",
         updateFreq: "实时",
-        tags: ["用户信息", "主数据"]
+        tags: ["公共信用", "合规"]
     },
     "RES004": {
         code: "RES004",
-        name: "订单交易明细",
-        description: "全量订单交易数据，包含订单金额、商品明细、支付方式、优惠信息、订单状态等完整订单信息。支持交易分析、销售统计、财务对账等场景。",
+        name: "医疗影像标注数据",
+        description: "包含CT、MRI、X光等医学影像数据及其专业标注信息。支持AI辅助诊断、医学研究等场景。",
         type: "数据集",
-        source: "交易系统",
-        organization: "交易结算部",
-        updateFreq: "实时",
-        tags: ["订单", "交易"]
+        source: "医疗数据创新实验室",
+        organization: "上海交通大学医学院",
+        updateFreq: "每周",
+        tags: ["医疗影像", "AI诊断"]
     },
     "RES005": {
         code: "RES005",
-        name: "订单履约数据",
-        description: "订单的履约状态、物流信息、签收情况、售后记录等完整履约链路数据。支持履约监控、物流分析、售后服务等业务。",
+        name: "临床病历脱敏数据",
+        description: "经过严格脱敏处理的临床病历数据，包含诊断、用药、检查结果等信息。支持临床研究、药物研发等场景。",
         type: "数据集",
-        source: "履约中台",
-        organization: "供应链部",
-        updateFreq: "实时",
-        tags: ["履约", "物流"]
+        source: "医疗数据创新实验室",
+        organization: "瑞金医院",
+        updateFreq: "每月",
+        tags: ["临床数据", "脱敏"]
     },
     "RES006": {
         code: "RES006",
-        name: "销售业绩数据",
-        description: "销售团队的业绩统计、目标完成率、环比同比数据、业绩排名等销售相关指标。支持销售分析、绩效考核、业绩预测等场景。",
-        type: "报表",
-        source: "销售BI系统",
-        organization: "销售部",
-        updateFreq: "每日",
-        tags: ["销售", "业绩"]
+        name: "疾病知识图谱数据",
+        description: "包含疾病、症状、药物、检查等医学实体及其关系的大规模知识图谱。支持智能问诊、辅助诊疗等场景。",
+        type: "知识图谱",
+        source: "医疗数据创新实验室",
+        organization: "复旦大学医学院",
+        updateFreq: "每季度",
+        tags: ["知识图谱", "医学"]
     },
     "RES007": {
         code: "RES007",
-        name: "客户信息数据",
-        description: "企业客户档案、联系信息、客户等级、跟进记录、成单历史等客户全生命周期数据。是客户关系管理的核心数据。",
-        type: "主数据",
-        source: "CRM系统",
-        organization: "客户服务部",
-        updateFreq: "实时",
-        tags: ["客户", "CRM"]
+        name: "城市人口流动数据",
+        description: "基于移动信令的城市人口流动数据，包含区域人口密度、通勤特征、活动轨迹等信息。支持城市规划、商业选址等场景。",
+        type: "数据集",
+        source: "上海城市可行数据空间",
+        organization: "上海市规划资源局",
+        updateFreq: "每日",
+        tags: ["人口流动", "城市规划"]
     },
     "RES008": {
         code: "RES008",
-        name: "线索转化漏斗",
-        description: "从线索获取、线索清洗、商机转化、成交签约的全链路转化数据。支持营销效果分析、转化率优化等场景。",
-        type: "报表",
-        source: "营销云",
-        organization: "市场部",
-        updateFreq: "T+1",
-        tags: ["线索", "转化"]
+        name: "交通出行数据",
+        description: "包含公共交通客流、道路拥堵、停车资源等城市交通数据。支持交通优化、出行服务等场景。",
+        type: "数据集",
+        source: "上海城市可行数据空间",
+        organization: "上海市交通委",
+        updateFreq: "实时",
+        tags: ["交通", "出行"]
     },
     "RES009": {
         code: "RES009",
-        name: "财务流水数据",
-        description: "全量财务收支流水，包含收入、支出、退款、调账等所有财务变动记录。是财务对账、资金分析的核心数据。",
+        name: "环境监测数据",
+        description: "包含空气质量、水质、噪声等环境监测数据。支持环境评估、健康研究等场景。",
         type: "数据集",
-        source: "财务系统",
-        organization: "财务部",
-        updateFreq: "实时",
-        tags: ["财务", "流水"]
+        source: "上海城市可行数据空间",
+        organization: "上海市生态环境局",
+        updateFreq: "每小时",
+        tags: ["环境", "监测"]
     },
     "RES010": {
         code: "RES010",
-        name: "发票管理数据",
-        description: "开票记录、发票状态、发票金额、税率、购方信息等发票相关数据。支持发票管理、税务申报等业务场景。",
+        name: "企业社保缴纳数据",
+        description: "企业社保缴纳情况、员工规模等人力资源相关数据。支持企业信用评估、人力资源分析等场景。",
         type: "数据集",
-        source: "税务系统",
-        organization: "财务部",
-        updateFreq: "每日",
-        tags: ["发票", "税务"]
+        source: "公共数据授权运营服务平台",
+        organization: "上海市人社局",
+        updateFreq: "每月",
+        tags: ["社保", "人力资源"]
     }
 };
 
 // 资源名称到ID的映射
 const resourceNameToId = {
-    "实时线索行为数据": "RES001",
-    "用户画像标签": "RES002",
-    "用户基础信息表": "RES003",
-    "订单交易明细": "RES004",
-    "订单履约数据": "RES005",
-    "销售业绩数据": "RES006",
-    "客户信息数据": "RES007",
-    "线索转化漏斗": "RES008",
-    "财务流水数据": "RES009",
-    "发票管理数据": "RES010"
+    "企业工商信息数据": "RES001",
+    "企业纳税信用数据": "RES002",
+    "公共信用信息数据": "RES003",
+    "医疗影像标注数据": "RES004",
+    "临床病历脱敏数据": "RES005",
+    "疾病知识图谱数据": "RES006",
+    "城市人口流动数据": "RES007",
+    "交通出行数据": "RES008",
+    "环境监测数据": "RES009",
+    "企业社保缴纳数据": "RES010"
 };
 
 // 根据ID获取资源详情

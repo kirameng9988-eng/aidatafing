@@ -110,13 +110,13 @@
                     <p class="text-sm text-gray-600 mb-3">您可以问我：</p>
                     <div class="space-y-2">
                         <button class="quick-question w-full text-left px-3 py-2 bg-blue-50 rounded-lg text-sm text-blue-600 hover:bg-blue-100">
-                            <i class="fas fa-lightbulb mr-2"></i>我想找用户行为数据
+                            <i class="fas fa-lightbulb mr-2"></i>我想找企业工商信息数据
                         </button>
                         <button class="quick-question w-full text-left px-3 py-2 bg-blue-50 rounded-lg text-sm text-blue-600 hover:bg-blue-100">
-                            <i class="fas fa-lightbulb mr-2"></i>需要销售相关的数据表
+                            <i class="fas fa-lightbulb mr-2"></i>需要医疗影像相关数据
                         </button>
                         <button class="quick-question w-full text-left px-3 py-2 bg-blue-50 rounded-lg text-sm text-blue-600 hover:bg-blue-100">
-                            <i class="fas fa-lightbulb mr-2"></i>有哪些财务数据可用？
+                            <i class="fas fa-lightbulb mr-2"></i>有哪些城市交通数据可用？
                         </button>
                     </div>
                 </div>
@@ -171,94 +171,92 @@
     </nav>
 
     <script>
-        // 模拟数据资源库（参照截图格式）
+        // 模拟数据资源库（三个平台）
         const dataResources = {
-            user: [
+            public: [
                 {
-                    name: "实时线索行为数据",
-                    description: "用户在产品内的所有行为数据，包括页面浏览、点击、表单提交、按钮点击等全量行为日志",
-                    source: "神策数据",
-                    type: "数据集",
-                    updateFreq: "实时",
-                    tags: ["用户行为", "埋点数据"]
-                },
-                {
-                    name: "用户画像标签",
-                    description: "包含用户的基础属性标签、兴趣标签、消费能力标签、行为偏好标签等多维度标签体系",
-                    source: "数据中台",
-                    type: "标签数据",
-                    updateFreq: "T+1",
-                    tags: ["用户画像", "标签"]
-                },
-                {
-                    name: "用户基础信息表",
-                    description: "用户注册信息、实名认证信息、会员等级、账户状态等核心用户信息",
-                    source: "CRM系统",
-                    type: "主数据",
-                    updateFreq: "实时",
-                    tags: ["用户信息", "主数据"]
-                }
-            ],
-            order: [
-                {
-                    name: "订单交易明细",
-                    description: "全量订单交易数据，包含订单金额、商品明细、支付方式、优惠信息、订单状态等",
-                    source: "交易系统",
-                    type: "数据集",
-                    updateFreq: "实时",
-                    tags: ["订单", "交易"]
-                },
-                {
-                    name: "订单履约数据",
-                    description: "订单的履约状态、物流信息、签收情况、售后记录等完整履约链路数据",
-                    source: "履约中台",
-                    type: "数据集",
-                    updateFreq: "实时",
-                    tags: ["履约", "物流"]
-                }
-            ],
-            sales: [
-                {
-                    name: "销售业绩数据",
-                    description: "销售团队的业绩统计、目标完成率、环比同比数据、业绩排名等销售相关指标",
-                    source: "销售BI系统",
-                    type: "报表",
-                    updateFreq: "每日",
-                    tags: ["销售", "业绩"]
-                },
-                {
-                    name: "客户信息数据",
-                    description: "企业客户档案、联系信息、客户等级、跟进记录、成单历史等客户全生命周期数据",
-                    source: "CRM系统",
-                    type: "主数据",
-                    updateFreq: "实时",
-                    tags: ["客户", "CRM"]
-                },
-                {
-                    name: "线索转化漏斗",
-                    description: "从线索获取、线索清洗、商机转化、成交签约的全链路转化数据",
-                    source: "营销云",
-                    type: "报表",
-                    updateFreq: "T+1",
-                    tags: ["线索", "转化"]
-                }
-            ],
-            finance: [
-                {
-                    name: "财务流水数据",
-                    description: "全量财务收支流水，包含收入、支出、退款、调账等所有财务变动记录",
-                    source: "财务系统",
-                    type: "数据集",
-                    updateFreq: "实时",
-                    tags: ["财务", "流水"]
-                },
-                {
-                    name: "发票管理数据",
-                    description: "开票记录、发票状态、发票金额、税率、购方信息等发票相关数据",
-                    source: "税务系统",
+                    name: "企业工商信息数据",
+                    description: "包含企业基础工商信息、股东信息、对外投资、变更记录等企业信用数据",
+                    source: "公共数据授权运营服务平台",
                     type: "数据集",
                     updateFreq: "每日",
-                    tags: ["发票", "税务"]
+                    tags: ["工商信息", "企业信用"]
+                },
+                {
+                    name: "企业纳税信用数据",
+                    description: "企业纳税信用等级、欠税信息、税务违法记录等纳税相关数据",
+                    source: "公共数据授权运营服务平台",
+                    type: "数据集",
+                    updateFreq: "每月",
+                    tags: ["纳税", "信用评级"]
+                },
+                {
+                    name: "公共信用信息数据",
+                    description: "包含企业及个人的公共信用信息，如行政处罚、荣誉奖励、失信记录等",
+                    source: "公共数据授权运营服务平台",
+                    type: "数据集",
+                    updateFreq: "实时",
+                    tags: ["公共信用", "合规"]
+                },
+                {
+                    name: "企业社保缴纳数据",
+                    description: "企业社保缴纳情况、员工规模等人力资源相关数据",
+                    source: "公共数据授权运营服务平台",
+                    type: "数据集",
+                    updateFreq: "每月",
+                    tags: ["社保", "人力资源"]
+                }
+            ],
+            medical: [
+                {
+                    name: "医疗影像标注数据",
+                    description: "包含CT、MRI、X光等医学影像数据及其专业标注信息",
+                    source: "医疗数据创新实验室",
+                    type: "数据集",
+                    updateFreq: "每周",
+                    tags: ["医疗影像", "AI诊断"]
+                },
+                {
+                    name: "临床病历脱敏数据",
+                    description: "经过严格脱敏处理的临床病历数据，包含诊断、用药、检查结果等信息",
+                    source: "医疗数据创新实验室",
+                    type: "数据集",
+                    updateFreq: "每月",
+                    tags: ["临床数据", "脱敏"]
+                },
+                {
+                    name: "疾病知识图谱数据",
+                    description: "包含疾病、症状、药物、检查等医学实体及其关系的大规模知识图谱",
+                    source: "医疗数据创新实验室",
+                    type: "知识图谱",
+                    updateFreq: "每季度",
+                    tags: ["知识图谱", "医学"]
+                }
+            ],
+            city: [
+                {
+                    name: "城市人口流动数据",
+                    description: "基于移动信令的城市人口流动数据，包含区域人口密度、通勤特征等",
+                    source: "上海城市可行数据空间",
+                    type: "数据集",
+                    updateFreq: "每日",
+                    tags: ["人口流动", "城市规划"]
+                },
+                {
+                    name: "交通出行数据",
+                    description: "包含公共交通客流、道路拥堵、停车资源等城市交通数据",
+                    source: "上海城市可行数据空间",
+                    type: "数据集",
+                    updateFreq: "实时",
+                    tags: ["交通", "出行"]
+                },
+                {
+                    name: "环境监测数据",
+                    description: "包含空气质量、水质、噪声等环境监测数据",
+                    source: "上海城市可行数据空间",
+                    type: "数据集",
+                    updateFreq: "每小时",
+                    tags: ["环境", "监测"]
                 }
             ]
         };
@@ -415,22 +413,21 @@
         }
 
         // 智能匹配数据资源
+        // 智能匹配数据资源
         function findResources(question) {
             const questionLower = question.toLowerCase();
             let resources = [];
 
             // 关键词匹配
-            if (questionLower.includes('用户') || questionLower.includes('行为') || questionLower.includes('画像') || questionLower.includes('线索')) {
-                resources = dataResources.user;
-            } else if (questionLower.includes('订单') || questionLower.includes('交易') || questionLower.includes('购买')) {
-                resources = dataResources.order;
-            } else if (questionLower.includes('销售') || questionLower.includes('客户') || questionLower.includes('业绩')) {
-                resources = dataResources.sales;
-            } else if (questionLower.includes('财务') || questionLower.includes('发票') || questionLower.includes('流水')) {
-                resources = dataResources.finance;
+            if (questionLower.includes('企业') || questionLower.includes('工商') || questionLower.includes('信用') || questionLower.includes('纳税') || questionLower.includes('社保')) {
+                resources = dataResources.public;
+            } else if (questionLower.includes('医疗') || questionLower.includes('影像') || questionLower.includes('病历') || questionLower.includes('疾病') || questionLower.includes('临床')) {
+                resources = dataResources.medical;
+            } else if (questionLower.includes('城市') || questionLower.includes('人口') || questionLower.includes('交通') || questionLower.includes('环境') || questionLower.includes('出行')) {
+                resources = dataResources.city;
             } else {
-                // 默认返回用户相关
-                resources = dataResources.user.slice(0, 2);
+                // 默认返回公共数据平台
+                resources = dataResources.public.slice(0, 2);
             }
 
             return resources;

@@ -37,12 +37,26 @@
         .top-nav {
             background-color: #030714;
         }
-        /* 下拉选择框样式 */
         #statusFilter {
             min-width: 90px;
         }
         #statusFilter:focus {
             outline: none;
+        }
+        .form-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #3B82F6;
+        }
+        .form-textarea {
+            resize: none;
         }
     </style>
 </head>
@@ -82,16 +96,17 @@
                 <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                 <input type="text"
                        id="searchInput"
-                       placeholder="搜索工单标题、编号..."
+                       placeholder="搜索需求内容、编号..."
                        class="search-input w-full pl-10 pr-4 py-2 bg-gray-100 rounded-lg text-sm border border-transparent">
             </div>
             <!-- 状态筛选下拉 -->
             <div class="relative">
                 <select id="statusFilter" class="appearance-none bg-gray-100 border-none rounded-lg px-3 py-2 pr-8 text-sm text-gray-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="all">全部状态</option>
-                    <option value="pending">待处理</option>
-                    <option value="processing">进行中</option>
-                    <option value="completed">已完成</option>
+                    <option value="submitted">需求提交</option>
+                    <option value="accepted">已受理</option>
+                    <option value="sourcing">寻源中</option>
+                    <option value="completed">寻源完成</option>
                     <option value="closed">已关闭</option>
                 </select>
                 <i class="fas fa-chevron-down absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none text-xs"></i>
@@ -99,9 +114,9 @@
         </div>
     </div>
 
-    <!-- 工单列表 -->
+    <!-- 需求列表 -->
     <main class="px-4 py-4" id="workOrderList">
-        <!-- 工单卡片将通过JS动态生成 -->
+        <!-- 需求卡片将通过JS动态生成 -->
     </main>
 
     <!-- 加载更多提示 -->
@@ -112,90 +127,123 @@
     <!-- 空状态 -->
     <div class="hidden flex-col items-center justify-center py-20" id="emptyState">
         <i class="fas fa-inbox text-6xl text-gray-300 mb-4"></i>
-        <p class="text-gray-400">暂无工单</p>
+        <p class="text-gray-400">暂无需求</p>
     </div>
 
     <!-- 底部Tab导航 -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-40">
         <div class="flex items-center justify-around h-14">
-            <a href="../index.html" class="bottom-tab">
+            <a href="../index.html" class="bottom-tab flex flex-col items-center text-gray-400">
                 <i class="fas fa-search text-xl mb-1"></i>
                 <span class="text-xs">数据寻源</span>
             </a>
-            <a href="list.html" class="bottom-tab active">
+            <a href="list.html" class="bottom-tab flex flex-col items-center text-blue-500">
                 <i class="fas fa-clipboard-list text-xl mb-1"></i>
                 <span class="text-xs">我的需求</span>
             </a>
         </div>
     </nav>
 
-    <!-- 新增工单弹窗 -->
+    <!-- 新增需求弹窗 -->
     <div id="addModal" class="fixed inset-0 z-50 hidden">
         <div class="absolute inset-0 bg-black bg-opacity-50" id="modalOverlay"></div>
         <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl max-h-screen overflow-y-auto">
-            <div class="sticky top-0 bg-white px-4 py-3 border-b border-gray-200 flex items-center justify-between">
-                <h2 class="text-lg font-semibold text-gray-800">创建工单</h2>
+            <div class="sticky top-0 bg-white px-4 py-3 border-b border-gray-200 flex items-center justify-between z-10">
+                <h2 class="text-lg font-semibold text-gray-800">创建数据需求</h2>
                 <button id="closeModalBtn" class="text-gray-400">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
             <div class="px-4 py-4">
-                <!-- 工单标题 -->
+                <!-- 核心内容 -->
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-2">
-                        工单标题 <span class="text-red-500">*</span>
+                        核心内容 <span class="text-red-500">*</span>
                     </label>
                     <input type="text"
-                           id="titleInput"
-                           placeholder="请输入工单标题"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500">
+                           id="coreContentInput"
+                           placeholder="请简要描述数据需求的核心内容"
+                           class="form-input">
                 </div>
 
-                <!-- 工单描述 -->
+                <!-- 覆盖范围 -->
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">工单描述</label>
-                    <textarea id="descInput"
-                              placeholder="请详细描述您的需求..."
-                              class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm resize-none focus:outline-none focus:border-blue-500"
-                              rows="4"></textarea>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">覆盖范围</label>
+                    <input type="text"
+                           id="coverageInput"
+                           placeholder="例如：全平台用户、近3年订单等"
+                           class="form-input">
                 </div>
 
-                <!-- 优先级 -->
+                <!-- 时间范围 -->
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        优先级 <span class="text-red-500">*</span>
-                    </label>
-                    <div class="flex items-center space-x-3" id="priorityOptions">
-                        <button class="priority-option flex-1 flex items-center justify-center px-4 py-2 border-2 border-gray-200 rounded-lg" data-value="high">
-                            <i class="fas fa-arrow-up text-red-500 mr-2"></i>
-                            <span class="text-sm">高</span>
-                        </button>
-                        <button class="priority-option flex-1 flex items-center justify-center px-4 py-2 border-2 border-gray-200 rounded-lg active" data-value="medium" style="border-color: #3B82F6; background-color: #EFF6FF;">
-                            <i class="fas fa-minus text-yellow-500 mr-2"></i>
-                            <span class="text-sm">中</span>
-                        </button>
-                        <button class="priority-option flex-1 flex items-center justify-center px-4 py-2 border-2 border-gray-200 rounded-lg" data-value="low">
-                            <i class="fas fa-arrow-down text-blue-500 mr-2"></i>
-                            <span class="text-sm">低</span>
-                        </button>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">时间范围</label>
+                    <div class="flex items-center space-x-2">
+                        <input type="date" id="startDateInput" class="form-input flex-1">
+                        <span class="text-gray-400">至</span>
+                        <input type="date" id="endDateInput" class="form-input flex-1">
                     </div>
                 </div>
 
-                <!-- 工单类型 -->
+                <!-- 核心字段 -->
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">工单类型</label>
-                    <select id="typeSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500">
-                        <option value="功能需求">功能需求</option>
-                        <option value="Bug修复">Bug修复</option>
-                        <option value="性能优化">性能优化</option>
-                        <option value="数据需求">数据需求</option>
-                        <option value="其他">其他</option>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">核心字段</label>
+                    <textarea id="coreFieldsInput"
+                              placeholder="请列出需要的数据字段，例如：用户ID、行为类型、页面路径..."
+                              class="form-input form-textarea"
+                              rows="2"></textarea>
+                </div>
+
+                <!-- 交付频率 -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">交付频率</label>
+                    <select id="deliveryFreqInput" class="form-input">
+                        <option value="">请选择</option>
+                        <option value="实时">实时</option>
+                        <option value="T+1">T+1</option>
+                        <option value="每日">每日</option>
+                        <option value="每周">每周</option>
+                        <option value="每月">每月</option>
+                        <option value="一次性">一次性</option>
                     </select>
                 </div>
 
+                <!-- 预算范围 -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">预算范围</label>
+                    <select id="budgetInput" class="form-input">
+                        <option value="">请选择</option>
+                        <option value="5万以内">5万以内</option>
+                        <option value="5-10万">5-10万</option>
+                        <option value="10-15万">10-15万</option>
+                        <option value="15-20万">15-20万</option>
+                        <option value="20-30万">20-30万</option>
+                        <option value="30-50万">30-50万</option>
+                        <option value="50万以上">50万以上</option>
+                    </select>
+                </div>
+
+                <!-- 合规方案 -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">合规方案</label>
+                    <input type="text"
+                           id="complianceInput"
+                           placeholder="例如：数据脱敏、访问审计、权限审批等"
+                           class="form-input">
+                </div>
+
+                <!-- 备注 -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">备注</label>
+                    <textarea id="remarkInput"
+                              placeholder="其他补充说明..."
+                              class="form-input form-textarea"
+                              rows="3"></textarea>
+                </div>
+
                 <!-- 提交按钮 -->
-                <button id="submitBtn" class="w-full bg-blue-500 text-white py-3 rounded-lg text-sm font-medium mt-4">
-                    提交工单
+                <button id="submitBtn" class="w-full bg-blue-500 text-white py-3 rounded-lg text-sm font-medium mt-2 hover:bg-blue-600 transition-colors">
+                    提交需求
                 </button>
             </div>
         </div>
@@ -208,14 +256,13 @@
                 <i class="fas fa-check text-3xl text-green-500"></i>
             </div>
             <h3 class="text-lg font-semibold mb-2">提交成功</h3>
-            <p class="text-sm text-gray-500">工单已成功创建</p>
+            <p class="text-sm text-gray-500">需求已成功创建</p>
         </div>
     </div>
 
     <script>
         let currentStatus = 'all';
         let currentSearchText = '';
-        let selectedPriority = 'medium';
 
         // 获取URL参数
         function getUrlParam(param) {
@@ -223,7 +270,7 @@
             return urlParams.get(param);
         }
 
-        // 渲染工单列表
+        // 渲染需求列表
         function renderWorkOrderList() {
             const listContainer = document.getElementById('workOrderList');
             const emptyState = document.getElementById('emptyState');
@@ -233,7 +280,7 @@
             // 搜索过滤
             if (currentSearchText) {
                 filteredOrders = filteredOrders.filter(order =>
-                    order.title.toLowerCase().includes(currentSearchText.toLowerCase()) ||
+                    order.coreContent.toLowerCase().includes(currentSearchText.toLowerCase()) ||
                     order.id.toLowerCase().includes(currentSearchText.toLowerCase())
                 );
             }
@@ -260,22 +307,21 @@
             listContainer.innerHTML = filteredOrders.map(order => `
                 <a href="detail.html?id=${order.id}" class="work-order-card block bg-white rounded-xl p-4 shadow-sm mb-3">
                     <div class="flex items-start justify-between mb-2">
-                        <h3 class="text-base font-medium text-gray-800 flex-1 pr-2">${order.title}</h3>
-                        <span class="text-xs px-2 py-1 rounded-full ${getStatusClass(order.status)} whitespace-nowrap">
+                        <h3 class="text-base font-medium text-gray-800 flex-1 pr-2">${order.coreContent}</h3>
+                        <span class="text-xs px-2 py-1 rounded-full whitespace-nowrap ${getStatusClass(order.status)}">
                             ${getStatusText(order.status)}
                         </span>
                     </div>
-                    <div class="text-xs text-gray-500 mb-3">${order.id}</div>
+                    <div class="text-xs text-gray-500 mb-2">${order.id}</div>
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-2">
-                            <span class="text-xs px-2 py-1 rounded ${getPriorityClass(order.priority)}">
-                                ${getPriorityText(order.priority)}优先级
+                            <span class="text-xs px-2 py-1 rounded bg-gray-100 text-gray-600">
+                                <i class="fas fa-sync-alt mr-1"></i>${order.deliveryFreq || '未设置'}
                             </span>
-                            <span class="text-xs text-gray-400">${order.type}</span>
+                            ${order.budget ? `<span class="text-xs text-gray-400">${order.budget}</span>` : ''}
                         </div>
-                        <div class="flex items-center text-xs text-gray-500">
-                            <i class="fas fa-clock mr-1"></i>
-                            ${formatTime(order.updateTime)}
+                        <div class="text-xs text-gray-400">
+                            ${formatTime(order.createTime)}
                         </div>
                     </div>
                 </a>
@@ -307,70 +353,108 @@
             }, 300);
         });
 
-        // 打开新增工单弹窗
+        // 打开新增需求弹窗
         document.getElementById('addBtn').addEventListener('click', function() {
             document.getElementById('addModal').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
         });
 
-        // 关闭新增工单弹窗
+        // 关闭新增需求弹窗
         function closeAddModal() {
             document.getElementById('addModal').classList.add('hidden');
             document.body.style.overflow = '';
             // 清空表单
-            document.getElementById('titleInput').value = '';
-            document.getElementById('descInput').value = '';
+            document.getElementById('coreContentInput').value = '';
+            document.getElementById('coverageInput').value = '';
+            document.getElementById('startDateInput').value = '';
+            document.getElementById('endDateInput').value = '';
+            document.getElementById('coreFieldsInput').value = '';
+            document.getElementById('deliveryFreqInput').value = '';
+            document.getElementById('budgetInput').value = '';
+            document.getElementById('complianceInput').value = '';
+            document.getElementById('remarkInput').value = '';
         }
 
         document.getElementById('closeModalBtn').addEventListener('click', closeAddModal);
         document.getElementById('modalOverlay').addEventListener('click', closeAddModal);
 
-        // 优先级选择
-        document.getElementById('priorityOptions').addEventListener('click', function(e) {
-            const option = e.target.closest('.priority-option');
-            if (!option) return;
+        // 格式化时间显示
+        function formatTime(timeStr) {
+            const date = new Date(timeStr);
+            const now = new Date();
+            const diff = now - date;
+            const hours = Math.floor(diff / (1000 * 60 * 60));
 
-            document.querySelectorAll('.priority-option').forEach(opt => {
-                opt.classList.remove('active');
-                opt.style.borderColor = '#E5E7EB';
-                opt.style.backgroundColor = '';
-            });
-            option.classList.add('active');
-            option.style.borderColor = '#3B82F6';
-            option.style.backgroundColor = '#EFF6FF';
-            selectedPriority = option.dataset.value;
-        });
+            if (hours < 1) {
+                return '刚刚';
+            } else if (hours < 24) {
+                return `${hours}小时前`;
+            } else {
+                const days = Math.floor(hours / 24);
+                if (days < 7) {
+                    return `${days}天前`;
+                } else {
+                    return timeStr.split(' ')[0];
+                }
+            }
+        }
 
-        // 提交工单
+        // 生成需求编号
+        function generateWorkOrderId() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const num = String(mockWorkOrders.length + 1).padStart(3, '0');
+            return `REQ${year}${month}${day}${num}`;
+        }
+
+        // 提交需求
         document.getElementById('submitBtn').addEventListener('click', function() {
-            const title = document.getElementById('titleInput').value.trim();
-            const desc = document.getElementById('descInput').value.trim();
-            const type = document.getElementById('typeSelect').value;
+            const coreContent = document.getElementById('coreContentInput').value.trim();
+            const coverage = document.getElementById('coverageInput').value.trim();
+            const startDate = document.getElementById('startDateInput').value;
+            const endDate = document.getElementById('endDateInput').value;
+            const coreFields = document.getElementById('coreFieldsInput').value.trim();
+            const deliveryFreq = document.getElementById('deliveryFreqInput').value;
+            const budget = document.getElementById('budgetInput').value;
+            const compliance = document.getElementById('complianceInput').value.trim();
+            const remark = document.getElementById('remarkInput').value.trim();
 
-            if (!title) {
-                alert('请输入工单标题');
+            if (!coreContent) {
+                alert('请输入核心内容');
                 return;
             }
 
-            // 模拟创建工单
+            // 组装时间范围
+            let timeRange = '';
+            if (startDate && endDate) {
+                timeRange = `${startDate} 至 ${endDate}`;
+            } else if (startDate) {
+                timeRange = `${startDate} 起`;
+            }
+
+            // 创建新需求
             const newOrder = {
                 id: generateWorkOrderId(),
-                title: title,
-                description: desc,
-                priority: selectedPriority,
-                status: 'pending',
-                type: type,
-                creator: '张三',
-                assignee: '待分配',
+                coreContent: coreContent,
+                coverage: coverage,
+                timeRange: timeRange,
+                coreFields: coreFields,
+                deliveryFreq: deliveryFreq,
+                budget: budget,
+                compliance: compliance,
+                remark: remark,
+                status: 'submitted',
+                creator: currentUser ? currentUser.name : '用户',
                 createTime: new Date().toLocaleString('zh-CN'),
                 updateTime: new Date().toLocaleString('zh-CN'),
-                progress: 0,
                 timeline: [
                     {
                         time: new Date().toLocaleString('zh-CN'),
-                        user: '张三',
-                        action: '创建工单',
-                        status: 'pending',
+                        user: currentUser ? currentUser.name : '用户',
+                        action: '提交需求',
+                        status: 'submitted',
                         icon: 'fa-plus-circle'
                     }
                 ]

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>工单详情</title>
+    <title>需求详情</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../src/css/common.css">
@@ -16,7 +16,7 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background-color: #F3F4F6;
             padding-top: 56px;
-            padding-bottom: 100px;
+            padding-bottom: 80px;
         }
         .top-nav {
             background-color: #030714;
@@ -49,17 +49,21 @@
             justify-content: center;
             font-size: 10px;
         }
-        .timeline-dot.pending {
-            background-color: #FEE2E2;
-            color: #EF4444;
+        .timeline-dot.submitted {
+            background-color: #FED7AA;
+            color: #EA580C;
         }
-        .timeline-dot.processing {
+        .timeline-dot.accepted {
             background-color: #DBEAFE;
-            color: #3B82F6;
+            color: #2563EB;
+        }
+        .timeline-dot.sourcing {
+            background-color: #E9D5FF;
+            color: #9333EA;
         }
         .timeline-dot.completed {
             background-color: #D1FAE5;
-            color: #10B981;
+            color: #059669;
         }
         .timeline-dot.closed {
             background-color: #F3F4F6;
@@ -71,11 +75,63 @@
         .action-btn:active {
             transform: scale(0.95);
         }
+        .info-row {
+            display: flex;
+            padding: 10px 0;
+            border-bottom: 1px solid #F3F4F6;
+        }
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        .info-label {
+            width: 80px;
+            flex-shrink: 0;
+            color: #6B7280;
+            font-size: 14px;
+        }
+        .info-value {
+            flex: 1;
+            color: #1F2937;
+            font-size: 14px;
+        }
         .modal {
             transition: all 0.3s ease;
         }
-        .modal-overlay {
-            background-color: rgba(0, 0, 0, 0.5);
+        .action-option {
+            transition: all 0.2s ease;
+            border: 2px solid #E5E7EB;
+        }
+        .action-option.selected {
+            border-color: #3B82F6;
+            background-color: #EFF6FF;
+        }
+        .action-option:active {
+            transform: scale(0.98);
+        }
+        .form-textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+            font-size: 14px;
+            resize: none;
+        }
+        .form-textarea:focus {
+            outline: none;
+            border-color: #3B82F6;
+        }
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        .checkbox-wrapper input {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        body.no-bottom {
+            padding-bottom: 20px;
         }
     </style>
 </head>
@@ -87,12 +143,9 @@
                 <a href="list.html" class="back-btn">
                     <i class="fas fa-arrow-left text-lg"></i>
                 </a>
-                <span class="text-white text-base font-semibold" id="workOrderId">WO20260401001</span>
+                <span class="text-white text-base font-semibold" id="workOrderId">REQ20260401001</span>
             </div>
             <div class="flex items-center space-x-3">
-                <button class="text-white" id="moreBtn">
-                    <i class="fas fa-ellipsis-v text-lg"></i>
-                </button>
                 <!-- 账号组件 -->
                 <div class="avatar-dropdown">
                     <button class="avatar-btn" id="avatarBtn">
@@ -110,66 +163,66 @@
 
     <!-- 主要内容 -->
     <main class="px-4 py-4">
-        <!-- 基本信息 -->
+        <!-- 基本信息卡片 -->
         <section class="bg-white rounded-xl p-4 shadow-sm mb-4">
             <div class="flex items-center justify-between mb-3">
                 <h2 class="text-base font-semibold text-gray-800">
-                    <i class="fas fa-info-circle text-blue-500 mr-2"></i>基本信息
+                    <i class="fas fa-file-alt text-blue-500 mr-2"></i>需求信息
                 </h2>
                 <span class="text-sm font-medium px-3 py-1 rounded-full" id="statusBadge">
-                    进行中
+                    寻源中
                 </span>
             </div>
 
-            <h3 class="text-lg font-medium text-gray-900 mb-3" id="workOrderTitle">
-                用户登录功能优化
-            </h3>
-
-            <div class="space-y-3">
-                <div class="flex items-start">
-                    <span class="text-sm text-gray-500 w-20">优先级</span>
-                    <span class="text-sm px-2 py-0.5 rounded" id="priorityBadge">高</span>
-                </div>
-                <div class="flex items-start">
-                    <span class="text-sm text-gray-500 w-20">工单类型</span>
-                    <span class="text-sm text-gray-800" id="workOrderType">功能需求</span>
-                </div>
-                <div class="flex items-start">
-                    <span class="text-sm text-gray-500 w-20">创建人</span>
-                    <div class="flex items-center">
-                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=30&h=30&fit=crop"
-                             alt="创建人"
-                             class="w-5 h-5 rounded-full mr-2">
-                        <span class="text-sm text-gray-800" id="creatorName">张三</span>
-                    </div>
-                </div>
-                <div class="flex items-start">
-                    <span class="text-sm text-gray-500 w-20">负责人</span>
-                    <div class="flex items-center">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=30&h=30&fit=crop"
-                             alt="负责人"
-                             class="w-5 h-5 rounded-full mr-2">
-                        <span class="text-sm text-gray-800" id="assigneeName">李四</span>
-                    </div>
-                </div>
-                <div class="flex items-start">
-                    <span class="text-sm text-gray-500 w-20">创建时间</span>
-                    <span class="text-sm text-gray-800" id="createTime">2026-04-01 10:00</span>
-                </div>
-                <div class="flex items-start">
-                    <span class="text-sm text-gray-500 w-20">更新时间</span>
-                    <span class="text-sm text-gray-800" id="updateTime">2026-04-01 15:30</span>
-                </div>
+            <div class="info-row">
+                <span class="info-label">需求编号</span>
+                <span class="info-value font-mono" id="reqId">REQ20260401001</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">核心内容</span>
+                <span class="info-value font-medium" id="coreContent">用户行为数据分析需求</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">覆盖范围</span>
+                <span class="info-value" id="coverage">全平台用户</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">时间范围</span>
+                <span class="info-value" id="timeRange">2026-04-01 至 2026-06-30</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">核心字段</span>
+                <span class="info-value" id="coreFields">用户ID、行为类型、页面路径、停留时长、设备信息</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">交付频率</span>
+                <span class="info-value" id="deliveryFreq">T+1</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">预算范围</span>
+                <span class="info-value" id="budget">10-20万</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">合规方案</span>
+                <span class="info-value" id="compliance">数据脱敏、访问审计</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">创建人</span>
+                <span class="info-value" id="creator">张三</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">创建时间</span>
+                <span class="info-value" id="createTime">2026-04-01 10:00</span>
             </div>
         </section>
 
-        <!-- 工单描述 -->
-        <section class="bg-white rounded-xl p-4 shadow-sm mb-4">
+        <!-- 备注卡片 -->
+        <section class="bg-white rounded-xl p-4 shadow-sm mb-4" id="remarkSection">
             <h2 class="text-base font-semibold text-gray-800 mb-3">
-                <i class="fas fa-file-alt text-blue-500 mr-2"></i>工单描述
+                <i class="fas fa-sticky-note text-yellow-500 mr-2"></i>备注
             </h2>
-            <p class="text-sm text-gray-600 leading-relaxed" id="workOrderDesc">
-                优化用户登录体验，增加微信、钉钉等第三方登录方式，提升用户登录便捷性和系统安全性。
+            <p class="text-sm text-gray-600 leading-relaxed" id="remark">
+                需要支持实时查询和历史数据分析，数据保留6个月
             </p>
         </section>
 
@@ -185,111 +238,174 @@
         </section>
     </main>
 
-    <!-- 底部操作按钮 -->
-    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-3 z-50">
-        <div class="flex items-center space-x-3">
-            <button class="action-btn flex-1 bg-blue-500 text-white py-3 rounded-lg text-sm font-medium" id="handleBtn">
-                <i class="fas fa-play-circle mr-2"></i>处理工单
-            </button>
-            <button class="action-btn w-12 h-12 bg-gray-100 text-gray-700 rounded-lg" id="closeBtn">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
+    <!-- 底部操作按钮 - 根据状态动态显示 -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-3 z-40" id="bottomActions">
+        <!-- 动态生成 -->
     </div>
 
-    <!-- 处理工单弹窗 -->
-    <div class="modal fixed inset-0 z-50 hidden" id="handleModal">
-        <div class="modal-overlay absolute inset-0" onclick="closeHandleModal()"></div>
+    <!-- 处理弹窗 - 需求提交状态 -->
+    <div id="handleModalSubmitted" class="modal fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-50" onclick="closeModal('handleModalSubmitted')"></div>
         <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl p-4">
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-semibold">处理工单</h3>
-                <button onclick="closeHandleModal()" class="text-gray-400">
+                <h3 class="text-lg font-semibold">处理需求</h3>
+                <button onclick="closeModal('handleModalSubmitted')" class="text-gray-400">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
             <div class="mb-4">
-                <label class="block text-sm text-gray-600 mb-2">处理说明</label>
-                <textarea class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500" rows="3"
-                          placeholder="请输入处理说明..."></textarea>
+                <label class="block text-sm text-gray-600 mb-3">请选择处理方式</label>
+                <div class="space-y-3">
+                    <div class="action-option rounded-lg p-3 cursor-pointer" data-action="accept" onclick="selectAction(this)">
+                        <div class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 text-xl mr-3"></i>
+                            <div>
+                                <div class="text-sm font-medium text-gray-800">受理需求</div>
+                                <div class="text-xs text-gray-500">受理后将进入寻源阶段</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="action-option rounded-lg p-3 cursor-pointer" data-action="close" onclick="selectAction(this)">
+                        <div class="flex items-center">
+                            <i class="fas fa-times-circle text-red-500 text-xl mr-3"></i>
+                            <div>
+                                <div class="text-sm font-medium text-gray-800">关闭需求</div>
+                                <div class="text-xs text-gray-500">拒绝此需求申请</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <button class="w-full bg-blue-500 text-white py-3 rounded-lg text-sm font-medium" onclick="submitHandle()">
-                提交
+            <div class="mb-4">
+                <label class="block text-sm text-gray-600 mb-2">处理说明</label>
+                <textarea id="handleRemarkSubmitted" class="form-textarea" rows="3" placeholder="请输入处理说明..."></textarea>
+            </div>
+            <button class="w-full bg-blue-500 text-white py-3 rounded-lg text-sm font-medium" onclick="submitHandleSubmitted()">
+                确认提交
             </button>
         </div>
     </div>
 
-    <!-- 更多操作弹窗 -->
-    <div class="modal fixed inset-0 z-50 hidden" id="moreModal">
-        <div class="modal-overlay absolute inset-0" onclick="closeMoreModal()"></div>
+    <!-- 处理弹窗 - 已受理状态 -->
+    <div id="handleModalAccepted" class="modal fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-50" onclick="closeModal('handleModalAccepted')"></div>
         <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl p-4">
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-semibold">更多操作</h3>
-                <button onclick="closeMoreModal()" class="text-gray-400">
+                <h3 class="text-lg font-semibold">分配处理人</h3>
+                <button onclick="closeModal('handleModalAccepted')" class="text-gray-400">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
-            <div class="space-y-2">
-                <button class="w-full flex items-center px-4 py-3 bg-gray-50 rounded-lg text-left">
-                    <i class="fas fa-share-alt text-blue-500 mr-3"></i>
-                    <span class="text-sm">分享工单</span>
-                </button>
-                <button class="w-full flex items-center px-4 py-3 bg-gray-50 rounded-lg text-left">
-                    <i class="fas fa-edit text-green-500 mr-3"></i>
-                    <span class="text-sm">编辑工单</span>
-                </button>
-                <button class="w-full flex items-center px-4 py-3 bg-gray-50 rounded-lg text-left">
-                    <i class="fas fa-trash text-red-500 mr-3"></i>
-                    <span class="text-sm text-red-500">删除工单</span>
+            <div class="mb-4">
+                <label class="block text-sm text-gray-600 mb-2">选择处理人</label>
+                <select id="assigneeSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                    <option value="">请选择处理人</option>
+                    <option value="李四">李四 - 数据工程师</option>
+                    <option value="王五">王五 - 数据分析师</option>
+                    <option value="赵六">赵六 - 数据产品经理</option>
+                </select>
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm text-gray-600 mb-2">处理说明</label>
+                <textarea id="handleRemarkAccepted" class="form-textarea" rows="3" placeholder="请输入处理说明..."></textarea>
+            </div>
+            <button class="w-full bg-blue-500 text-white py-3 rounded-lg text-sm font-medium" onclick="submitHandleAccepted()">
+                确认分配
+            </button>
+        </div>
+    </div>
+
+    <!-- 处理弹窗 - 寻源中状态 -->
+    <div id="handleModalSourcing" class="modal fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-50" onclick="closeModal('handleModalSourcing')"></div>
+        <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl p-4">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold">处理进度</h3>
+                <button onclick="closeModal('handleModalSourcing')" class="text-gray-400">
+                    <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
+            <div class="mb-4">
+                <label class="checkbox-wrapper">
+                    <input type="checkbox" id="completeCheckbox">
+                    <span class="text-sm text-gray-700">标记为寻源完成</span>
+                </label>
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm text-gray-600 mb-2">处理说明</label>
+                <textarea id="handleRemarkSourcing" class="form-textarea" rows="3" placeholder="请输入处理说明..."></textarea>
+            </div>
+            <button class="w-full bg-blue-500 text-white py-3 rounded-lg text-sm font-medium" onclick="submitHandleSourcing()">
+                确认提交
+            </button>
         </div>
     </div>
 
     <script>
+        let currentWorkOrder = null;
+        let selectedAction = null;
+
         // 获取URL参数
         function getUrlParam(param) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(param);
         }
 
-        // 渲染工单详情
+        // 渲染需求详情
         function renderWorkOrderDetail() {
             const workOrderId = getUrlParam('id');
-            const workOrder = getWorkOrderById(workOrderId);
+            currentWorkOrder = getWorkOrderById(workOrderId);
 
-            if (!workOrder) {
-                alert('工单不存在');
+            if (!currentWorkOrder) {
+                alert('需求不存在');
                 window.location.href = 'list.html';
                 return;
             }
 
             // 更新页面内容
-            document.getElementById('workOrderId').textContent = workOrder.id;
-            document.getElementById('workOrderTitle').textContent = workOrder.title;
-            document.getElementById('workOrderDesc').textContent = workOrder.description;
-            document.getElementById('workOrderType').textContent = workOrder.type;
-            document.getElementById('creatorName').textContent = workOrder.creator;
-            document.getElementById('assigneeName').textContent = workOrder.assignee;
-            document.getElementById('createTime').textContent = workOrder.createTime;
-            document.getElementById('updateTime').textContent = workOrder.updateTime;
+            document.getElementById('workOrderId').textContent = currentWorkOrder.id;
+            document.getElementById('reqId').textContent = currentWorkOrder.id;
+            document.getElementById('coreContent').textContent = currentWorkOrder.coreContent;
+            document.getElementById('coverage').textContent = currentWorkOrder.coverage || '未设置';
+            document.getElementById('timeRange').textContent = currentWorkOrder.timeRange || '未设置';
+            document.getElementById('coreFields').textContent = currentWorkOrder.coreFields || '未设置';
+            document.getElementById('deliveryFreq').textContent = currentWorkOrder.deliveryFreq || '未设置';
+            document.getElementById('budget').textContent = currentWorkOrder.budget || '未设置';
+            document.getElementById('compliance').textContent = currentWorkOrder.compliance || '未设置';
+            document.getElementById('creator').textContent = currentWorkOrder.creator || '未知';
+            document.getElementById('createTime').textContent = currentWorkOrder.createTime;
+
+            // 备注处理
+            const remarkSection = document.getElementById('remarkSection');
+            const remark = document.getElementById('remark');
+            if (currentWorkOrder.remark) {
+                remark.textContent = currentWorkOrder.remark;
+            } else {
+                remarkSection.style.display = 'none';
+            }
 
             // 状态标签
             const statusBadge = document.getElementById('statusBadge');
-            statusBadge.textContent = getStatusText(workOrder.status);
-            statusBadge.className = `text-sm font-medium px-3 py-1 rounded-full ${getStatusClass(workOrder.status)}`;
-
-            // 优先级标签
-            const priorityBadge = document.getElementById('priorityBadge');
-            priorityBadge.textContent = getPriorityText(workOrder.priority) + '优先级';
-            priorityBadge.className = `text-sm px-2 py-0.5 rounded ${getPriorityClass(workOrder.priority)}`;
+            statusBadge.textContent = getStatusText(currentWorkOrder.status);
+            statusBadge.className = `text-sm font-medium px-3 py-1 rounded-full ${getStatusClass(currentWorkOrder.status)}`;
 
             // 渲染时间轴
-            renderTimeline(workOrder.timeline);
+            renderTimeline(currentWorkOrder.timeline);
+
+            // 渲染底部操作按钮
+            renderBottomActions(currentWorkOrder.status);
+
+            // 更新页面标题
+            document.title = currentWorkOrder.coreContent + ' - 需求详情';
         }
 
         // 渲染时间轴
         function renderTimeline(timeline) {
             const container = document.getElementById('timelineContainer');
+            if (!timeline || timeline.length === 0) {
+                container.innerHTML = '<p class="text-sm text-gray-400 text-center py-4">暂无进度记录</p>';
+                return;
+            }
             container.innerHTML = timeline.map((item, index) => `
                 <div class="timeline-item">
                     <div class="timeline-dot ${item.status}">
@@ -308,38 +424,230 @@
             `).join('');
         }
 
-        // 弹窗控制
-        function openHandleModal() {
-            document.getElementById('handleModal').classList.remove('hidden');
-        }
+        // 根据状态渲染底部操作按钮
+        function renderBottomActions(status) {
+            const bottomActions = document.getElementById('bottomActions');
+            let html = '';
 
-        function closeHandleModal() {
-            document.getElementById('handleModal').classList.add('hidden');
-        }
+            switch(status) {
+                case 'submitted':
+                    // 需求提交 - 显示处理按钮
+                    html = `
+                        <button class="action-btn w-full bg-blue-500 text-white py-3 rounded-lg text-sm font-medium" onclick="openModal('handleModalSubmitted')">
+                            <i class="fas fa-cog mr-2"></i>处理需求
+                        </button>
+                    `;
+                    document.body.classList.remove('no-bottom');
+                    break;
 
-        function openMoreModal() {
-            document.getElementById('moreModal').classList.remove('hidden');
-        }
+                case 'accepted':
+                    // 已受理 - 显示分配处理人按钮
+                    html = `
+                        <button class="action-btn w-full bg-blue-500 text-white py-3 rounded-lg text-sm font-medium" onclick="openModal('handleModalAccepted')">
+                            <i class="fas fa-user-plus mr-2"></i>分配处理人
+                        </button>
+                    `;
+                    document.body.classList.remove('no-bottom');
+                    break;
 
-        function closeMoreModal() {
-            document.getElementById('moreModal').classList.add('hidden');
-        }
+                case 'sourcing':
+                    // 寻源中 - 显示处理进度按钮
+                    html = `
+                        <button class="action-btn w-full bg-purple-500 text-white py-3 rounded-lg text-sm font-medium" onclick="openModal('handleModalSourcing')">
+                            <i class="fas fa-tasks mr-2"></i>更新进度
+                        </button>
+                    `;
+                    document.body.classList.remove('no-bottom');
+                    break;
 
-        // 提交处理
-        function submitHandle() {
-            alert('处理成功！');
-            closeHandleModal();
-        }
+                case 'completed':
+                    // 寻源完成 - 无操作按钮
+                    html = '';
+                    document.body.classList.add('no-bottom');
+                    bottomActions.style.display = 'none';
+                    return;
 
-        // 按钮事件
-        document.getElementById('handleBtn').addEventListener('click', openHandleModal);
-        document.getElementById('moreBtn').addEventListener('click', openMoreModal);
-        document.getElementById('closeBtn').addEventListener('click', function() {
-            if (confirm('确认要关闭此工单吗？')) {
-                alert('工单已关闭');
-                window.location.href = 'list.html';
+                case 'closed':
+                    // 已关闭 - 无操作按钮
+                    html = '';
+                    document.body.classList.add('no-bottom');
+                    bottomActions.style.display = 'none';
+                    return;
+
+                default:
+                    html = '';
+                    document.body.classList.add('no-bottom');
+                    bottomActions.style.display = 'none';
+                    return;
             }
-        });
+
+            bottomActions.innerHTML = html;
+            bottomActions.style.display = 'block';
+        }
+
+        // 打开弹窗
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 关闭弹窗
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        // 选择操作方式（需求提交状态）
+        function selectAction(element) {
+            document.querySelectorAll('.action-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            selectedAction = element.dataset.action;
+        }
+
+        // 提交处理 - 需求提交状态
+        function submitHandleSubmitted() {
+            if (!selectedAction) {
+                alert('请选择处理方式');
+                return;
+            }
+
+            const remark = document.getElementById('handleRemarkSubmitted').value.trim();
+            const currentUser_name = currentUser ? currentUser.name : '管理员';
+
+            if (selectedAction === 'accept') {
+                // 受理需求
+                currentWorkOrder.status = 'accepted';
+                currentWorkOrder.timeline.push({
+                    time: new Date().toLocaleString('zh-CN'),
+                    user: currentUser_name,
+                    action: '已受理',
+                    status: 'accepted',
+                    icon: 'fa-check-circle'
+                });
+                if (remark) {
+                    currentWorkOrder.timeline.push({
+                        time: new Date().toLocaleString('zh-CN'),
+                        user: currentUser_name,
+                        action: '备注：' + remark,
+                        status: 'accepted',
+                        icon: 'fa-comment'
+                    });
+                }
+                closeModal('handleModalSubmitted');
+                alert('需求已受理');
+            } else if (selectedAction === 'close') {
+                // 关闭需求
+                currentWorkOrder.status = 'closed';
+                currentWorkOrder.timeline.push({
+                    time: new Date().toLocaleString('zh-CN'),
+                    user: currentUser_name,
+                    action: '关闭需求' + (remark ? '：' + remark : ''),
+                    status: 'closed',
+                    icon: 'fa-times-circle'
+                });
+                closeModal('handleModalSubmitted');
+                alert('需求已关闭');
+                window.location.href = 'list.html';
+                return;
+            }
+
+            currentWorkOrder.updateTime = new Date().toLocaleString('zh-CN');
+            renderWorkOrderDetail();
+        }
+
+        // 提交处理 - 已受理状态
+        function submitHandleAccepted() {
+            const assignee = document.getElementById('assigneeSelect').value;
+            const remark = document.getElementById('handleRemarkAccepted').value.trim();
+            const currentUser_name = currentUser ? currentUser.name : '管理员';
+
+            if (!assignee) {
+                alert('请选择处理人');
+                return;
+            }
+
+            // 分配处理人并进入寻源中
+            currentWorkOrder.status = 'sourcing';
+            currentWorkOrder.assignee = assignee;
+            currentWorkOrder.timeline.push({
+                time: new Date().toLocaleString('zh-CN'),
+                user: currentUser_name,
+                action: '分配给 ' + assignee,
+                status: 'sourcing',
+                icon: 'fa-user-plus'
+            });
+            if (remark) {
+                currentWorkOrder.timeline.push({
+                    time: new Date().toLocaleString('zh-CN'),
+                    user: currentUser_name,
+                    action: '备注：' + remark,
+                    status: 'sourcing',
+                    icon: 'fa-comment'
+                });
+            }
+            currentWorkOrder.timeline.push({
+                time: new Date().toLocaleString('zh-CN'),
+                user: assignee,
+                action: '开始寻源',
+                status: 'sourcing',
+                icon: 'fa-search'
+            });
+
+            currentWorkOrder.updateTime = new Date().toLocaleString('zh-CN');
+            closeModal('handleModalAccepted');
+            alert('已分配给 ' + assignee + '，进入寻源阶段');
+            renderWorkOrderDetail();
+        }
+
+        // 提交处理 - 寻源中状态
+        function submitHandleSourcing() {
+            const isComplete = document.getElementById('completeCheckbox').checked;
+            const remark = document.getElementById('handleRemarkSourcing').value.trim();
+            const currentUser_name = currentUser ? currentUser.name : '管理员';
+
+            if (isComplete) {
+                // 标记为寻源完成
+                currentWorkOrder.status = 'completed';
+                currentWorkOrder.timeline.push({
+                    time: new Date().toLocaleString('zh-CN'),
+                    user: currentUser_name,
+                    action: '寻源完成',
+                    status: 'completed',
+                    icon: 'fa-check-double'
+                });
+                if (remark) {
+                    currentWorkOrder.timeline.push({
+                        time: new Date().toLocaleString('zh-CN'),
+                        user: currentUser_name,
+                        action: '备注：' + remark,
+                        status: 'completed',
+                        icon: 'fa-comment'
+                    });
+                }
+                closeModal('handleModalSourcing');
+                alert('寻源已完成');
+            } else {
+                // 仅添加处理记录
+                if (!remark) {
+                    alert('请输入处理说明');
+                    return;
+                }
+                currentWorkOrder.timeline.push({
+                    time: new Date().toLocaleString('zh-CN'),
+                    user: currentUser_name,
+                    action: '更新进度：' + remark,
+                    status: 'sourcing',
+                    icon: 'fa-edit'
+                });
+                closeModal('handleModalSourcing');
+                alert('进度已更新');
+            }
+
+            currentWorkOrder.updateTime = new Date().toLocaleString('zh-CN');
+            renderWorkOrderDetail();
+        }
 
         // 页面加载时执行
         document.addEventListener('DOMContentLoaded', function() {
